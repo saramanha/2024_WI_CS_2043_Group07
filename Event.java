@@ -15,17 +15,17 @@ public class Event {
 	private String inventory;
 	private LocalDate date;
 	private double price;
-	private Instructor instructor;
+	private GymWorker gymWorker;
 	
 
-	private Event(String name, int capacity, Inventory inventory, double price, LocalDate date, Instructor instructor){
+	private Event(String name, int capacity, Inventory inventory, double price, LocalDate date, GymWorker gymWorker){
 
 			this.name = name;
 			this.capacity = capacity;
 			this.inventory = inventory;
 			this.price = price;
 			this.date = date;
-			this.instructor = instructor;
+			this.gymWorker = gymWorker;
 		}
 	
 
@@ -46,19 +46,19 @@ public class Event {
 	public LocalDate getDate(){
 		return date;
 	}
-	public Instructor getInstructor(){
-		return Instructor;
+	public GymWorker getGymWorker(){
+		return gymWorker;
 	}
 
 
 // setters
 
 	public void setName(String newName){
-		name = newName:
+		name = newName;
 	}
 
 	public void setPrice(double newPrice){
-		price = newPrice:
+		price = newPrice;
 	}
 
 	public void setCapacity(int newCapacity){
@@ -72,11 +72,11 @@ public class Event {
 
 	public void setDate(LocalDate newDate){
 		//check if available
-		date = newDate:
+		date = newDate;
 	}
 
-	public void setInstructor(Instructor newInstructor){
-		instructor = newInstructor:
+	public void setInstructor(GymWorker newGymWorker){
+		gymWorker = newGymWorker;
 	}
 
 
@@ -84,7 +84,7 @@ public class Event {
 
 public toString(){
 
-	return "Event: " + name + " Max. capacity: " + capacity + " The price: $" + price + " Date: " + date + " Instructor name: " + instructor + ".\n" ;
+	return "Event: " + name + " Max. capacity: " + capacity + " The price: $" + price + " Date: " + date + " Instructor name: " + gymWorker + ".\n" ;
 	}
 
 }
