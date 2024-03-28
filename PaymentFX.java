@@ -40,7 +40,6 @@ public class PaymentFX extends Application
         Event event = new Event("Fitness", 30, fitnessMat, 45.0, date1, instructor1); 
 
         primaryStage.setTitle("Check out");
-        // Create GUI components
         eventNameLabel = new Label("Event Name: " + event.getName());
         eventNameLabel.setFont(Font.font("times new roman", 14));
         equipmentLabel = new Label("Equipment Used: " + event.getInventory());
