@@ -2,18 +2,22 @@
      @author Yohanne Husserlle Noume Happi
 */
 import javafx.application.Application;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
+import javafx.scene.text.*;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
+import javafx.event.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import java.awt.Desktop;
 import java.net.URI;
+import java.time.*;
 
 public class PaymentFX extends Application 
 {
-    private Event event; 
-  	private Button paypalButton;
+    private GymWorker instructor1;
+    private Inventory fitnessMat;
+    private Button paypalButton;
     private Text paymentLabel;
     private Button googlepayButton;
     private Button applepayButton;
@@ -30,13 +34,17 @@ public class PaymentFX extends Application
     @Override
     public void start(Stage primaryStage) 
     {
+	LocalDate date1 = LocalDate.of(2024, 01, 24);
+        instructor1 = new GymWorker(1010, "John Black", "Fitness instructor", "johnBlack@gmail.com", "+15068990825");
+        fitnessMat = new Inventory("Mat", 100);
+        Event event = new Event("Fitness", 30, fitnessMat, 45.0, date1, instructor1); 
+
         primaryStage.setTitle("Check out");
-        // Create GUI components
         eventNameLabel = new Label("Event Name: " + event.getName());
         eventNameLabel.setFont(Font.font("times new roman", 14));
-        equipmentLabel = new Label("Equipment Used: " + event.getEquipmentUsed());
+        equipmentLabel = new Label("Equipment Used: " + event.getInventory());
         equipmentLabel.setFont(Font.font("times new roman", 14));
-        instructorLabel = new Label("Instructor: " + event.getInstructorName());
+        instructorLabel = new Label("Instructor: " + event.getGymWorkerName());
         instructorLabel.setFont(Font.font("times new roman", 14));
         totalLabel = new Label("Total Price: $" + event.getPrice());
         totalLabel.setFont(Font.font("times new roman", 14));
@@ -58,7 +66,7 @@ public class PaymentFX extends Application
         GridPane buttonPane = new GridPane();
         VBox mainPane = new VBox(10);
         mainPane.setMinSize(600, 400);
-        mainPane.setPadding(new Insets(10, 10, 10, 10));
+        mainPane.setPadding(new Insets(10));
         mainPane.setAlignment(Pos.CENTER);
 
         inputPane.setVgap(10);
@@ -79,18 +87,32 @@ public class PaymentFX extends Application
         primaryStage.show();  
     }
     public void eventHandler(ActionEvent event)
-	{
-        if (event.getSource() == paypalButton) 
+   {
+       if (event.getSource() == paypalButton) 
         {
-            redirectToPayment("https://www.paypal.com");
-        } 
+            try{
+                URI uri = new URI("https://www.paypal.com");
+                Desktop dt = Desktop.getDesktop();
+                dt.browse(uri);
+            }catch(Exception ex){}
+        }
         else if (event.getSource() == googlepayButton) 
         {
-            redirectToPayment("https://pay.google.com");
+            try{
+                URI uri = new URI("https://pay.google.com");
+                Desktop dt = Desktop.getDesktop();
+                dt.browse(uri);
+            }catch(Exception ex){}
+           
         } 
         else if (event.getSource() == applepayButton) 
         {
-            redirectToPayment("https://www.apple.com/apple-pay/");
+            try{
+                URI uri = new URI("https://www.apple.com/apple-pay/");
+                Desktop dt = Desktop.getDesktop();
+                dt.browse(uri);
+            }catch(Exception ex){}
+           
         }
     }  
 }
