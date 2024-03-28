@@ -1,3 +1,7 @@
+
+import java.util.ArrayList;
+import java.time.LocalDate;
+
 public class GymWorker {
     private static int nextId = 1000; // Static variable for auto-incrementing IDs starting from 1000
     private int id;
@@ -5,6 +9,7 @@ public class GymWorker {
     private String role;
     private String email;
     private String phoneNumber;
+    private ArrayList<LocalDate> dateList;
 
     public GymWorker(String name, String role, String email, String phoneNumber) {
         this.id = nextId++; // Increment nextId for each new GymWorker
@@ -12,6 +17,8 @@ public class GymWorker {
         this.role = role;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        dateList = new ArrayList<LocalDate>();
+
     }
 
     public int getId() {
@@ -48,6 +55,18 @@ public class GymWorker {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isAvailable(LocalDate dateIn){
+
+        for(LocalDate d : dateList){
+            if(d.isEqual(dateIn)){
+                return false;
+            }
+        }
+
+        return true;
+
     }
 
     public void displayInfo() {
