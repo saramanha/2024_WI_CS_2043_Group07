@@ -12,7 +12,7 @@ public class Event {
 
 	private String name;
 	private int capacity;
-	private String inventory;
+	private Inventory inventory;
 	private LocalDate date;
 	private double price;
 	private GymWorker gymWorker;
@@ -75,14 +75,14 @@ public class Event {
 		date = newDate;
 	}
 
-	public void setInstructor(GymWorker newGymWorker){
+	public void setGymWorker(GymWorker newGymWorker){
 		gymWorker = newGymWorker;
 	}
 
 
 // overriding toString()
 
-public toString(){
+public String toString(){
 
 	return "Event: " + name + " Max. capacity: " + capacity + " The price: $" + price + " Date: " + date + " Instructor name: " + gymWorker + ".\n" ;
 	}
