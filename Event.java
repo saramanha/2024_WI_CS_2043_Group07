@@ -1,7 +1,6 @@
 
+import java.util.ArrayList; // import the ArrayList class
 import java.time.LocalDate;
-
-
 
 public class Event {
 
@@ -13,7 +12,7 @@ public class Event {
 	private GymWorker gymWorker;
 	
 
-	public Event(String name, int capacity, Inventory inventory, double price, LocalDate date, GymWorker gymWorker){
+	private Event(String name, int capacity, Inventory inventory, double price, LocalDate date, GymWorker gymWorker){
 
 			this.name = name;
 			this.capacity = capacity;
@@ -41,9 +40,9 @@ public class Event {
 	public LocalDate getDate(){
 		return date;
 	}
+
 	public String getGymWorkerName(){
 		return gymWorker.getName();
-	}
 
 	public String getInventory(){
 		return inventory.getType();
@@ -73,7 +72,7 @@ public class Event {
 		date = newDate;
 	}
 
-	public void setWorker(GymWorker newGymWorker){
+	public void setGymWorker(GymWorker newGymWorker){
 		gymWorker = newGymWorker;
 	}
 
@@ -83,6 +82,6 @@ public class Event {
 public String toString(){
 
 	return "Event: " + name + " Max. capacity: " + capacity + " The price: $" + price + " Date: " + date + " Instructor name: " + gymWorker.getName() + ".\n" ;
-	}
+	
 
 }
