@@ -16,7 +16,7 @@ class MemberTest {
     void testGetName_ShouldReturnCorrectName() {
         assertEquals("Leila Rock", member.getName());
     }
-
+    
     @Test
     void testGetEmail_ShouldReturnCorrectEmail() {
         assertEquals("lrock@gmail.com", member.getEmail());
