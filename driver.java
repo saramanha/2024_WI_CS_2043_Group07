@@ -1,13 +1,13 @@
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -15,8 +15,10 @@ import javafx.stage.Stage;
 
 public class driver extends Application{
     private Stage stage;
-    private File memberFile;
-    private ArrayList<Member> memberList = new ArrayList<>(); 
+    private ArrayList<Member> memberList = new ArrayList<>();
+    private ArrayList<Event> eventList = new ArrayList<>();
+    private ArrayList<Button> eventButtons = new ArrayList<>();
+    private Member newUser;
 
     //Scene 1: Deciding if it's a member or worker using the application.
     private Scene scene1;
@@ -93,25 +95,39 @@ public class driver extends Application{
 
     //Scene 7: After registering new member in scene3
     private Scene scene7;
+    private Button bEventCancel;
+    private Button bEvent;
+    private Label userIdMessage;
+    private Label eventListMessage;
 
+    private ScrollPane scene7ScrollP;
     private VBox vBox7;
+    private HBox hBox7_registerMessage;
+    private VBox vBox7_buttons;
+
+    //Scene 8:
+    private Scene scene8;
+
+    private VBox vBox8;
 
     @Override
     public void start(Stage primaryStage) throws IOException{
         stage = primaryStage;
         stage.setTitle("GYM Events");
 
-        memberFile = new File("members.csv");
+        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
 
 
 
         scene1 = createSceneOne();
-        scene2 = createSceneTwo();
-        scene3 = createSceneThree();
-        scene4 = createSceneFour();
+
+        //Move these in the proper methods later.
+        scene4 = createSceneFour(); 
         scene5 = createSceneFive();
         scene6 = createSceneSix();
-        scene7 = createSceneSeven();
 
         stage.setScene(scene1);
 
@@ -121,9 +137,9 @@ public class driver extends Application{
     private Scene createSceneOne(){
         startLabel = new Label("Welcome to UNB gym events.\n Are you an employee or user?");
         bUser = new Button("User");
-        bUser.setOnAction(e -> switchScenes(scene2));
+        bUser.setOnAction(e -> {scene2 = createSceneTwo(); switchScenes(scene2);});
         bEmployee = new Button("Employee");
-        bEmployee.setOnAction(e-> switchScenes(scene4));
+        bEmployee.setOnAction(e-> {scene4 = createSceneFour(); switchScenes(scene4);});
 
         vBox1 = new VBox();
         vBox1.setSpacing(30);
@@ -145,7 +161,7 @@ public class driver extends Application{
         bLogIn = new Button("Log in");
         bLogIn.setOnAction(e -> switchScenes(scene5));
         bRegister = new Button("Register");
-        bRegister.setOnAction(e-> switchScenes(scene3));
+        bRegister.setOnAction(e-> {scene3 = createSceneThree(); switchScenes(scene3);});
         bS2Back = new Button("Back");
         bS2Back.setOnAction(e -> switchScenes(scene1));
 
@@ -177,8 +193,10 @@ public class driver extends Application{
         bRegisterEnd.setOnAction(e -> {
             message.setText("");
             if(phoneText.getText().length() == 10) {
-                Member newUser = new Member(nameText.getText(), emailText.getText(), phoneText.getText());
+                newUser = new Member(nameText.getText(), emailText.getText(), phoneText.getText());
                 memberList.add(newUser);
+                scene7 = createSceneSeven();
+
                 System.out.println(memberList.get(0).getId());
                 switchScenes(scene7);
             } else {
@@ -187,7 +205,7 @@ public class driver extends Application{
         });
 
         bCancel = new Button("Cancel");
-        bCancel.setOnAction(e-> {switchScenes(scene2); message.setText("");});
+        bCancel.setOnAction(e-> {scene2 = createSceneTwo(); switchScenes(scene2); message.setText("");});
 
         vBox3 = new VBox();
         vBox3.setAlignment(Pos.TOP_CENTER);
@@ -263,7 +281,7 @@ public class driver extends Application{
         bUserLogIn = new Button("Log in");
         //bUserLogIn.setOnAction(e -> switchScenes());
         bUserCancel = new Button("Cancel");
-        bUserCancel.setOnAction(e -> switchScenes(scene2));
+        bUserCancel.setOnAction(e -> {scene2 = createSceneTwo(); switchScenes(scene2);});
 
         vBox5 = new VBox();
         vBox5.setAlignment(Pos.TOP_CENTER);
@@ -311,13 +329,74 @@ public class driver extends Application{
     }
    
     private Scene createSceneSeven(){
+        eventListMessage = new Label("");
+        userIdMessage = new Label("Thank you for registering. " + String.valueOf(newUser.getId()) + " is your id. You will need this to log in later.");
+
+        bEventCancel = new Button("Back to main page");
+        bEventCancel.setOnAction(e -> switchScenes(scene1));
+
         vBox7 = new VBox();
-        scene7 = new Scene(vBox7, 300, 200);
+        vBox7.setAlignment(Pos.TOP_CENTER);
+        vBox7.setSpacing(20);
+
+        hBox7_registerMessage = new HBox();
+        hBox7_registerMessage.setAlignment(Pos.TOP_LEFT);
+
+        vBox7_buttons = new VBox();
+        vBox7_buttons.setAlignment(Pos.TOP_LEFT);
+        vBox7_buttons.setSpacing(10);
+
+        hBox7_registerMessage.getChildren().add(userIdMessage);
+        vBox7.getChildren().addAll(hBox7_registerMessage);
+
+        if(eventList.size() == 0){
+            System.out.println(eventList.size());
+            eventListMessage.setText("Currently there are no events\n please check later.");
+
+            vBox7.getChildren().addAll(eventListMessage, bEventCancel);
+        }
+        else{
+            for(int i = 0; i < eventList.size(); i++){
+                bEvent = new Button("Event " + (i+1) + ":");
+                eventButtons.add(bEvent);
+                bEvent.setOnAction(this::handleEventButtons);
+
+                vBox7_buttons.getChildren().add(bEvent);
+            }
+
+            scene7ScrollP = new ScrollPane(vBox7_buttons);
+            vBox7.getChildren().addAll(scene7ScrollP, bEventCancel);
+        }
+
+        scene7 = new Scene(vBox7, 500, 300);
         return scene7;
+    }
+
+    private Scene createSceneEight(int pos){
+        Event current = eventList.get(pos);
+        
+
+        vBox8 = new VBox();
+        vBox8.setAlignment(Pos.TOP_CENTER);
+        vBox8.setSpacing(10);
+
+        scene1 = new Scene(vBox8, 300, 200);
+        return scene8;
     }
 
     private void switchScenes(Scene scene){
         stage.setScene(scene);
+    }
+
+    public void handleEventButtons(ActionEvent e){
+        for(int i = 0; i < eventButtons.size(); i++){
+            if(e.getSource() == eventButtons.get(i)){
+                System.out.println("Button " + (i+1) + " pressed");
+                scene8 = createSceneEight(i);
+                switchScenes(scene8);
+                break;
+            }
+        }
     }
 
     public static void main(String[] args) {
