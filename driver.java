@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -99,7 +100,7 @@ public class driver extends Application{
 
     private VBox vBox6;
 
-    //Scene 7: After registering new member in scene3
+    //Scene 7: After registering new member in scene3 or Log in as old member in scene5
     private Scene scene7;
     private Button bEventCancel;
     private Button bEvent;
@@ -151,13 +152,13 @@ public class driver extends Application{
         memberList.add(new Member("Teoman Gur", "@gmail.com", "5069218321", 1021));
         workerList.add(new GymWorker("Teoman", "Role", "Email", "Phone"));
 
-        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing1", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing2", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing3", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing4", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing5", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing6", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing7", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
         //Testing end.
 
         scene1 = createSceneOne();
@@ -282,7 +283,7 @@ public class driver extends Application{
         empNameLabel = new Label("Name: ");
         empNameText = new TextField();
         empPassLabel = new Label("Password: ");
-        empPassText = new TextField();
+        empPassText = new PasswordField();
         empMessage = new Label("");
 
         bEmpLogIn = new Button("Log in");
@@ -445,7 +446,7 @@ public class driver extends Application{
         }
         else{
             for(int i = 0; i < eventList.size(); i++){
-                bEvent = new Button("Event " + (i+1) + ":");
+                bEvent = new Button("Event " + (i+1) + ": " + eventList.get(i).getName());
                 eventButtons.add(bEvent);
                 bEvent.setOnAction(this::handleEventButtons);
 
@@ -555,7 +556,7 @@ public class driver extends Application{
         }
         else{
             for(int i = 0; i < eventList.size(); i++){
-                bEditE = new Button("Event " + (i+1) + ":");
+                bEditE = new Button("Event " + (i+1) + ": " + eventList.get(i).getName());
                 eventButtons.add(bEditE);
                 bEditE.setOnAction(this::handleEditButtons);
 
@@ -592,3 +593,14 @@ public class driver extends Application{
         launch(args);
     }
 }
+
+
+
+/*
+ * Fix GymWorker class to include password (String)
+ * Add csv methods
+ * Create event for workers
+ * Edit events for workers
+ * Promotion????
+ * Once we have csv, include a method to check the pass events + add ArrayList<Event> passEvents
+ */
