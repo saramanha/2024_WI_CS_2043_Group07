@@ -1,7 +1,7 @@
-﻿type of inventory,quantity,date booked
-Yoga Mats,30,
+Type,Amount, Dates
+Ball,100,
 Dumbbells,60,
-Weighted balls,40,
-Resistence bands,35,
-Jumping ropes,38,
+Weighted Balls,40,
+Resistance Bands,35,
+Jumping Ropes,38,
 Stepper,35,
