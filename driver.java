@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -12,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.awt.Desktop;
 
 public class driver extends Application{
     private Stage stage;
@@ -56,6 +58,7 @@ public class driver extends Application{
     private HBox hBox3_email;
     private HBox hBox3_phone;
     private HBox hBox3_buttons;
+
 
     //Scene 4: After clicking Employee in scene1, 
     private Scene scene4;
@@ -107,8 +110,19 @@ public class driver extends Application{
 
     //Scene 8:
     private Scene scene8;
+    private Button bBackEventList;
+    private Button bPaymentPage;
 
     private VBox vBox8;
+    private HBox hBox8_buttons;
+
+    //Scene 9:
+    private Scene scene9;
+    private Button bPaypal;
+    private Button bGooglePay;
+    private Button bApplePay;
+
+    private VBox vBox9;
 
     @Override
     public void start(Stage primaryStage) throws IOException{
@@ -120,17 +134,8 @@ public class driver extends Application{
         eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
         eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
 
-
-
         scene1 = createSceneOne();
-
-        //Move these in the proper methods later.
-        scene4 = createSceneFour(); 
-        scene5 = createSceneFive();
-        scene6 = createSceneSix();
-
         stage.setScene(scene1);
-
         stage.show();
     }
 
@@ -159,11 +164,11 @@ public class driver extends Application{
     private Scene createSceneTwo(){
         userLabel = new Label("Are you a returning member?");
         bLogIn = new Button("Log in");
-        bLogIn.setOnAction(e -> switchScenes(scene5));
+        bLogIn.setOnAction(e -> {scene5 = createSceneFive(); switchScenes(scene5);});
         bRegister = new Button("Register");
         bRegister.setOnAction(e-> {scene3 = createSceneThree(); switchScenes(scene3);});
         bS2Back = new Button("Back");
-        bS2Back.setOnAction(e -> switchScenes(scene1));
+        bS2Back.setOnAction(e -> {scene1 = createSceneOne(); switchScenes(scene1);});
 
         vBox2 = new VBox();
         vBox2.setAlignment(Pos.TOP_CENTER);
@@ -195,6 +200,8 @@ public class driver extends Application{
             if(phoneText.getText().length() == 10) {
                 newUser = new Member(nameText.getText(), emailText.getText(), phoneText.getText());
                 memberList.add(newUser);
+
+                userIdMessage = new Label("Thank you for registering. " + String.valueOf(newUser.getId()) + " is your id. You will need this to log in later.");
                 scene7 = createSceneSeven();
 
                 System.out.println(memberList.get(0).getId());
@@ -243,9 +250,9 @@ public class driver extends Application{
         empPassLabel = new Label("Password: ");
         empPassText = new TextField();
         bEmpLogIn = new Button("Log in");
-        bEmpLogIn.setOnAction(e -> switchScenes(scene6));
+        bEmpLogIn.setOnAction(e -> {scene6 = createSceneSix(); switchScenes(scene6);});
         bEmpCancel = new Button("Cancel");
-        bEmpCancel.setOnAction(e -> switchScenes(scene1));
+        bEmpCancel.setOnAction(e -> {scene1 = createSceneOne(); switchScenes(scene1);});
 
         vBox4 = new VBox();
         vBox4.setAlignment(Pos.TOP_CENTER);
@@ -275,11 +282,15 @@ public class driver extends Application{
     private Scene createSceneFive(){
         userIdLabel = new Label("Generated Id: ");
         userIdText = new TextField();
-        // userIdText.setMaxSize(150, 5);
         userNameLabel = new Label("Name: ");
         userNameText = new TextField();
+
         bUserLogIn = new Button("Log in");
-        //bUserLogIn.setOnAction(e -> switchScenes());
+        bUserLogIn.setOnAction(e -> {
+            userIdMessage = new Label("Welcome back, " + "!");
+            scene7 = createSceneSeven(); 
+            switchScenes(scene7);
+        });
         bUserCancel = new Button("Cancel");
         bUserCancel.setOnAction(e -> {scene2 = createSceneTwo(); switchScenes(scene2);});
 
@@ -316,7 +327,7 @@ public class driver extends Application{
         //bEditEvent.setOnAction(e -> switchScenes());
 
         bEmpBack = new Button("Back to main page");
-        bEmpBack.setOnAction(e -> switchScenes(scene1));
+        bEmpBack.setOnAction(e -> {scene1 = createSceneOne(); switchScenes(scene1);});
 
         vBox6 = new VBox();
         vBox6.setAlignment(Pos.TOP_CENTER);
@@ -329,11 +340,11 @@ public class driver extends Application{
     }
    
     private Scene createSceneSeven(){
+        eventButtons.clear();
         eventListMessage = new Label("");
-        userIdMessage = new Label("Thank you for registering. " + String.valueOf(newUser.getId()) + " is your id. You will need this to log in later.");
 
         bEventCancel = new Button("Back to main page");
-        bEventCancel.setOnAction(e -> switchScenes(scene1));
+        bEventCancel.setOnAction(e -> {scene1 = createSceneOne(); switchScenes(scene1);});
 
         vBox7 = new VBox();
         vBox7.setAlignment(Pos.TOP_CENTER);
@@ -373,15 +384,63 @@ public class driver extends Application{
     }
 
     private Scene createSceneEight(int pos){
-        Event current = eventList.get(pos);
-        
+        // Event current = eventList.get(pos);
+
+        bBackEventList = new Button("Back");
+        bBackEventList.setOnAction(e -> {scene7 = createSceneSeven(); switchScenes(scene7);});
+
+        bPaymentPage = new Button("Continue with payment");
+        bPaymentPage.setOnAction(e -> {scene9 = createSceneNine(); switchScenes(scene9);});
 
         vBox8 = new VBox();
         vBox8.setAlignment(Pos.TOP_CENTER);
         vBox8.setSpacing(10);
 
-        scene1 = new Scene(vBox8, 300, 200);
+        hBox8_buttons = new HBox();
+        hBox8_buttons.setAlignment(Pos.TOP_CENTER);
+        hBox8_buttons.setSpacing(10);
+
+        hBox8_buttons.getChildren().addAll(bPaymentPage, bBackEventList);
+        vBox8.getChildren().add(hBox8_buttons);
+        scene8 = new Scene(vBox8, 300, 200);
         return scene8;
+    }
+
+    private Scene createSceneNine(){
+        bPaypal = new Button("Paypal");
+        bPaypal.setOnAction(e -> {
+            try{
+                URI uri = new URI("https://www.paypal.com");
+                Desktop dt = Desktop.getDesktop();
+                dt.browse(uri);
+            }catch(Exception ex){}
+        });
+
+        bGooglePay = new Button("Google Pay");
+        bGooglePay.setOnAction(e -> {
+            try{
+                URI uri = new URI("https://pay.google.com");
+                Desktop dt = Desktop.getDesktop();
+                dt.browse(uri);
+            }catch(Exception ex){}
+        });
+
+        bApplePay = new Button("Apple Pay");
+        bApplePay.setOnAction(e -> {
+            try{
+                URI uri = new URI("https://www.apple.com/apple-pay/");
+                Desktop dt = Desktop.getDesktop();
+                dt.browse(uri);
+            }catch(Exception ex){}
+        });
+
+        vBox9 = new VBox();
+        vBox9.setAlignment(Pos.TOP_CENTER);
+        vBox9.setSpacing(10);
+
+        vBox9.getChildren().addAll(bPaypal, bGooglePay, bApplePay);
+        scene9 = new Scene(vBox9, 300, 200);
+        return scene9;
     }
 
     private void switchScenes(Scene scene){
