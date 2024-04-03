@@ -19,6 +19,7 @@ public class driver extends Application{
     private Stage stage;
     private ArrayList<Member> memberList = new ArrayList<>();
     private ArrayList<Event> eventList = new ArrayList<>();
+    private ArrayList<GymWorker> workerList = new ArrayList<>(); //This is not used yet
     private ArrayList<Button> eventButtons = new ArrayList<>();
     private Member newUser;
 
@@ -68,6 +69,7 @@ public class driver extends Application{
     private TextField empPassText;
     private Button bEmpLogIn;
     private Button bEmpCancel;
+    private Label empMessage;
 
     private VBox vBox4;
     private HBox hBox4_name;
@@ -82,6 +84,7 @@ public class driver extends Application{
     private TextField userNameText;
     private Button bUserLogIn;
     private Button bUserCancel;
+    private Label messageLogIn;
 
     private VBox vBox5;
     private HBox hBox5_id;
@@ -121,18 +124,41 @@ public class driver extends Application{
     private Button bPaypal;
     private Button bGooglePay;
     private Button bApplePay;
+    private Button bCancelPay;
 
     private VBox vBox9;
+
+    //Scene 10:
+    private Scene scene10;
+
+    //Scene 11;
+    private Scene scene11;
+    private Button bEditCancel;
+    private Button bEditE;
+    private Label workerMessage;
+
+    private ScrollPane scene11ScrollP;
+    private VBox vBox11;
+    private VBox vBox11_buttons;
+    private HBox hBox11_registerMessage;
 
     @Override
     public void start(Stage primaryStage) throws IOException{
         stage = primaryStage;
         stage.setTitle("GYM Events");
 
+        //Testing.
+        memberList.add(new Member("Teoman Gur", "@gmail.com", "5069218321", 1021));
+        workerList.add(new GymWorker("Teoman", "Role", "Email", "Phone"));
+
         eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
         eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
         eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
         eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        //Testing end.
 
         scene1 = createSceneOne();
         stage.setScene(scene1);
@@ -196,18 +222,26 @@ public class driver extends Application{
 
         bRegisterEnd = new Button("Register");
         bRegisterEnd.setOnAction(e -> {
-            message.setText("");
-            if(phoneText.getText().length() == 10) {
-                newUser = new Member(nameText.getText(), emailText.getText(), phoneText.getText());
-                memberList.add(newUser);
+            if(nameText.getText().compareTo("")!=0 && emailText.getText().compareTo("")!=0 && phoneText.getText().compareTo("")!=0){
+                message.setText("");
+                if(phoneText.getText().length() == 10 && emailText.getText().contains("@")) {
+                    if(memberList.size() == 0){
+                        newUser = new Member(nameText.getText(), emailText.getText(), phoneText.getText(), 1000);
+                        memberList.add(newUser);
+                    }else {
+                        int nextId = memberList.get(memberList.size() - 1).getId() + 1;
+                        newUser = new Member(nameText.getText(), emailText.getText(), phoneText.getText(), nextId);
+                        memberList.add(newUser);
+                    }
+                    userIdMessage = new Label("Thank you for registering. " + String.valueOf(newUser.getId()) + " is your id. You will need this to log in later.");
+                    scene7 = createSceneSeven();
 
-                userIdMessage = new Label("Thank you for registering. " + String.valueOf(newUser.getId()) + " is your id. You will need this to log in later.");
-                scene7 = createSceneSeven();
-
-                System.out.println(memberList.get(0).getId());
-                switchScenes(scene7);
-            } else {
-                message.setText("Please make sure you input correctly.");
+                    switchScenes(scene7);
+                } else {
+                    message.setText("Please make sure you input correctly.");
+                }
+            }else {
+                message.setText("Please make sure to fill everything.");
             }
         });
 
@@ -249,14 +283,34 @@ public class driver extends Application{
         empNameText = new TextField();
         empPassLabel = new Label("Password: ");
         empPassText = new TextField();
+        empMessage = new Label("");
+
         bEmpLogIn = new Button("Log in");
-        bEmpLogIn.setOnAction(e -> {scene6 = createSceneSix(); switchScenes(scene6);});
+        bEmpLogIn.setOnAction(e -> {
+            boolean empExist = false;
+            if(empNameText.getText().compareTo("")!=0 && empPassText.getText().compareTo("")!=0){
+                for(int i = 0; i < workerList.size(); i++){
+                    if(workerList.get(i).getName().compareTo(empNameText.getText())==0){ //&& workerList.get(i).getPass.compareTo(empPassText)==0
+                        empExist = true;
+                    }
+                }
+                if(empExist){
+                    scene6 = createSceneSix(); 
+                    switchScenes(scene6);
+                }else {
+                    empMessage.setText("Please make sure you input correctly.");
+                }
+            }else{
+                empMessage.setText("Please make sure to fill everything.");
+            }
+        });
+
         bEmpCancel = new Button("Cancel");
         bEmpCancel.setOnAction(e -> {scene1 = createSceneOne(); switchScenes(scene1);});
 
         vBox4 = new VBox();
         vBox4.setAlignment(Pos.TOP_CENTER);
-        vBox4.setSpacing(30);
+        vBox4.setSpacing(25);
 
         hBox4_name = new HBox();
         hBox4_name.setAlignment(Pos.TOP_CENTER);
@@ -273,9 +327,8 @@ public class driver extends Application{
         hBox4_name.getChildren().addAll(empNameLabel, empNameText);
         hBox4_pw.getChildren().addAll(empPassLabel, empPassText);
         hBox4_buttons.getChildren().addAll(bEmpLogIn, bEmpCancel);
-        vBox4.getChildren().addAll(hBox4_name, hBox4_pw, hBox4_buttons);
+        vBox4.getChildren().addAll(hBox4_name, hBox4_pw, hBox4_buttons, empMessage);
         scene4 = new Scene(vBox4, 300, 200);
-
         return scene4;
     }
 
@@ -285,18 +338,38 @@ public class driver extends Application{
         userNameLabel = new Label("Name: ");
         userNameText = new TextField();
 
+        messageLogIn = new Label("");
+
         bUserLogIn = new Button("Log in");
         bUserLogIn.setOnAction(e -> {
-            userIdMessage = new Label("Welcome back, " + "!");
-            scene7 = createSceneSeven(); 
-            switchScenes(scene7);
+            if(userIdText.getText().compareTo("")!= 0 && userNameText.getText().compareTo("")!=0){
+                messageLogIn.setText("");
+                Boolean exist = false;
+                for(int i = 0; i < memberList.size(); i++){
+                    if(memberList.get(i).getId() == Integer.valueOf(userIdText.getText()) && memberList.get(i).getName().compareTo(userNameText.getText())==0){
+                        exist = true;
+                        break;
+                    }
+                }
+                if(exist){
+                    userIdMessage = new Label("Welcome back, " + "!");
+                    scene7 = createSceneSeven(); 
+                    switchScenes(scene7);
+                }
+                else{
+                    messageLogIn.setText("Please make sure you input correctly.");
+                }
+            }else {
+                messageLogIn.setText("Please make sure to fill everything");
+            }
         });
+
         bUserCancel = new Button("Cancel");
-        bUserCancel.setOnAction(e -> {scene2 = createSceneTwo(); switchScenes(scene2);});
+        bUserCancel.setOnAction(e -> {scene2 = createSceneTwo(); switchScenes(scene2);  messageLogIn.setText("");});
 
         vBox5 = new VBox();
         vBox5.setAlignment(Pos.TOP_CENTER);
-        vBox5.setSpacing(30);
+        vBox5.setSpacing(25);
 
         hBox5_id = new HBox();
         hBox5_id.setAlignment(Pos.TOP_CENTER);
@@ -313,7 +386,7 @@ public class driver extends Application{
         hBox5_id.getChildren().addAll(userIdLabel, userIdText);
         hBox5_name.getChildren().addAll(userNameLabel, userNameText);
         hBox5_buttons.getChildren().addAll(bUserLogIn, bUserCancel);
-        vBox5.getChildren().addAll(hBox5_id, hBox5_name, hBox5_buttons);
+        vBox5.getChildren().addAll(hBox5_id, hBox5_name, hBox5_buttons, messageLogIn);
         scene5 = new Scene(vBox5, 300, 200);
 
         return scene5;
@@ -324,7 +397,11 @@ public class driver extends Application{
         //bCreateEvent.setOnAction(e -> switchScenes());
 
         bEditEvent = new Button("Edit an event");
-        //bEditEvent.setOnAction(e -> switchScenes());
+        bEditEvent.setOnAction(e -> {
+            workerMessage = new Label("Which event would you like to edit.");
+            scene11 = createSceneEleven(); 
+            switchScenes(scene11);
+        });
 
         bEmpBack = new Button("Back to main page");
         bEmpBack.setOnAction(e -> {scene1 = createSceneOne(); switchScenes(scene1);});
@@ -390,7 +467,7 @@ public class driver extends Application{
         bBackEventList.setOnAction(e -> {scene7 = createSceneSeven(); switchScenes(scene7);});
 
         bPaymentPage = new Button("Continue with payment");
-        bPaymentPage.setOnAction(e -> {scene9 = createSceneNine(); switchScenes(scene9);});
+        bPaymentPage.setOnAction(e -> {scene9 = createSceneNine(pos); switchScenes(scene9);});
 
         vBox8 = new VBox();
         vBox8.setAlignment(Pos.TOP_CENTER);
@@ -406,7 +483,7 @@ public class driver extends Application{
         return scene8;
     }
 
-    private Scene createSceneNine(){
+    private Scene createSceneNine(int pos){
         bPaypal = new Button("Paypal");
         bPaypal.setOnAction(e -> {
             try{
@@ -434,13 +511,63 @@ public class driver extends Application{
             }catch(Exception ex){}
         });
 
+        bCancelPay = new Button("Cancel");
+        bCancelPay.setOnAction(e -> {scene8 = createSceneEight(pos); switchScenes(scene8);});
+
         vBox9 = new VBox();
         vBox9.setAlignment(Pos.TOP_CENTER);
         vBox9.setSpacing(10);
 
-        vBox9.getChildren().addAll(bPaypal, bGooglePay, bApplePay);
+        vBox9.getChildren().addAll(bPaypal, bGooglePay, bApplePay, bCancelPay);
         scene9 = new Scene(vBox9, 300, 200);
         return scene9;
+    }
+
+    private Scene createSceneTen(){
+        return scene10;
+    }
+
+    private Scene createSceneEleven(){
+        eventButtons.clear();
+        eventListMessage = new Label("");
+
+        bEditCancel = new Button("Back");
+        bEditCancel.setOnAction(e -> {scene6 = createSceneSix(); switchScenes(scene6);});
+
+        vBox11 = new VBox();
+        vBox11.setAlignment(Pos.TOP_CENTER);
+        vBox11.setSpacing(20);
+
+        hBox11_registerMessage = new HBox();
+        hBox11_registerMessage.setAlignment(Pos.TOP_LEFT);
+
+        vBox11_buttons = new VBox();
+        vBox11_buttons.setAlignment(Pos.TOP_LEFT);
+        vBox11_buttons.setSpacing(10);
+
+        hBox11_registerMessage.getChildren().add(workerMessage);
+        vBox11.getChildren().addAll(hBox11_registerMessage);
+        if(eventList.size() == 0){
+            System.out.println(eventList.size());
+            eventListMessage.setText("Currently there are no events\n please check later.");
+
+            vBox11.getChildren().addAll(eventListMessage, bEditCancel);
+        }
+        else{
+            for(int i = 0; i < eventList.size(); i++){
+                bEditE = new Button("Event " + (i+1) + ":");
+                eventButtons.add(bEditE);
+                bEditE.setOnAction(this::handleEditButtons);
+
+                vBox11_buttons.getChildren().add(bEditE);
+            }
+
+            scene11ScrollP = new ScrollPane(vBox11_buttons);
+            vBox11.getChildren().addAll(scene11ScrollP, bEditCancel);
+        }
+
+        scene11 = new Scene(vBox11, 500, 300);
+        return scene11;
     }
 
     private void switchScenes(Scene scene){
@@ -458,6 +585,9 @@ public class driver extends Application{
         }
     }
 
+    public void handleEditButtons(ActionEvent e){
+
+    }
     public static void main(String[] args) {
         launch(args);
     }
