@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class Event {
 
 	private String name;
+	private String description;
 	private int capacity;
 	private Inventory inventory;
 	private LocalDate date;
@@ -12,18 +13,15 @@ public class Event {
 	private GymWorker gymWorker;
 	
 
-	private Event(String name, int capacity, Inventory inventory, double price, LocalDate date, GymWorker gymWorker){
-
-			this.name = name;
-			this.capacity = capacity;
-			this.inventory = inventory;
-			this.price = price;
-			this.date = date;
-			this.gymWorker = gymWorker;
-		}
-	
-
-
+	private Event(String name, String description, int capacity, Inventory inventory, double price, LocalDate date, GymWorker gymWorker){
+		this.name = name;
+		this.description = description;
+		this.capacity = capacity;
+		this.inventory = inventory;
+		this.price = price;
+		this.date = date;
+		this.gymWorker = gymWorker;
+	}
 
 	public double getPrice(){
 		return price;
@@ -31,6 +29,10 @@ public class Event {
 
 	public String getName(){
 		return name;
+	}
+
+	public String getDescription(){
+		return description;
 	}
 
 	public int getCapacity(){
@@ -43,6 +45,7 @@ public class Event {
 
 	public String getGymWorkerName(){
 		return gymWorker.getName();
+	}
 
 	public String getInventory(){
 		return inventory.getType();
@@ -54,6 +57,10 @@ public class Event {
 		name = newName;
 	}
 
+	public void setDescription(String newDescription){
+		description = newDescription;
+	}
+
 	public void setPrice(double newPrice){
 		price = newPrice;
 	}
@@ -63,8 +70,7 @@ public class Event {
 	}
 
 	public void setInventory(Inventory inventoryIn){
-		
-		inventory = new Inventory(inventoryIn.getType(), inventoryIn.getAmount());
+		inventory = inventoryIn;
 	}
 
 	public void setDate(LocalDate newDate){
@@ -76,12 +82,8 @@ public class Event {
 		gymWorker = newGymWorker;
 	}
 
-
-// overriding toString()
-
-public String toString(){
-
-	return "Event: " + name + " Max. capacity: " + capacity + " The price: $" + price + " Date: " + date + " Instructor name: " + gymWorker.getName() + ".\n" ;
-	
-
+	// overriding toString()
+	public String toString(){
+		return "Event: " + name + " Max. capacity: " + capacity + " The price: $" + price + " Date: " + date + " Instructor name: " + gymWorker.getName() + ".\n" ;
+	}
 }
