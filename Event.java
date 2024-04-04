@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 public class Event {
 
 	private String name;
+	private String description;
 	private int capacity;
 	private Inventory inventory;
 	private LocalDate date;
@@ -19,9 +20,10 @@ public class Event {
 	static File eventFile = new File("Event_DB.csv");
 	
 
-	public Event(String name, int capacity, Inventory inventory, double price, LocalDate date, String gymWorker){
+	public Event(String name, String description, int capacity, Inventory inventory, double price, LocalDate date, String gymWorker){
 
 			this.name = name;
+			this.description = description;
 			this.capacity = capacity;
 			this.inventory = inventory;
 			this.price = price;
@@ -35,6 +37,10 @@ public class Event {
 
 	public String getName(){
 		return name;
+	}
+
+	public String getDescription(){
+		return description;
 	}
 
 	public int getCapacity(){
@@ -63,6 +69,10 @@ public class Event {
 		name = newName;
 	}
 
+	public void setDescription(String newDescription){
+		description = newDescription;
+	}
+
 	public void setPrice(double newPrice){
 		price = newPrice;
 	}
@@ -73,7 +83,7 @@ public class Event {
 
 	public void setInventory(Inventory inventoryIn){
 		
-		inventory = new Inventory(inventoryIn.getType(), inventoryIn.getAmount());
+		inventory = inventoryIn;
 	}
 
 	public void setDate(LocalDate newDate){

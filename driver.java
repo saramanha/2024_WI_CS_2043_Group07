@@ -26,6 +26,7 @@ public class driver extends Application{
     private ArrayList<GymWorker> workerList = new ArrayList<>(); //This is not used yet
     private ArrayList<Inventory> inventoryList = new ArrayList<>();
     private ArrayList<Button> eventButtons = new ArrayList<>();
+    private String[] emails = {"@gmail.com", "@outlook.com"};
     private Member newUser;
 
     //Scene 1: Deciding if it's a member or worker using the application.
@@ -144,6 +145,19 @@ public class driver extends Application{
 
     //Scene 10:
     private Scene scene10;
+    private Button bCreate;
+    private Button bCancelCreate;
+    private TextField createName;
+    private TextField createDesc;
+    private TextField createCap;
+    private TextField createInvName;
+    private TextField createPrice;
+    private TextField createWorker;
+    private TextField createDate;
+    private Label createMessage;
+
+    private VBox vBox10;
+    private HBox hBox10_buttons;
 
     //Scene 11;
     private Scene scene11;
@@ -166,6 +180,13 @@ public class driver extends Application{
 
     private VBox vBox12;
     private HBox hBox12_buttons;
+
+    //Scene 13;
+    private Scene scene13;
+    private Button bPaid;
+    private Label thankYouLabel;
+
+    private VBox vBox13;
 
     @Override
     public void start(Stage primaryStage) throws IOException{
@@ -246,7 +267,14 @@ public class driver extends Application{
         bRegisterEnd.setOnAction(e -> {
             if(nameText.getText().compareTo("")!=0 && emailText.getText().compareTo("")!=0 && phoneText.getText().compareTo("")!=0){
                 message.setText("");
-                if(phoneText.getText().length() == 10 && emailText.getText().contains("@")) {
+                boolean contains = false;
+                for(String str : emails){
+                    if(emailText.getText().contains(str)){
+                        contains = true;
+                        break;
+                    }
+                }
+                if(phoneText.getText().length() == 10 && contains) { //emailText.getText().contains(
                     if(memberList.size() == 0){
                         newUser = new Member(nameText.getText(), emailText.getText(), phoneText.getText(), 1000);
                         memberList.add(newUser);
@@ -416,7 +444,7 @@ public class driver extends Application{
 
     private Scene createSceneSix(){
         bCreateEvent = new Button("Create new event");
-        //bCreateEvent.setOnAction(e -> switchScenes());
+        bCreateEvent.setOnAction(e -> {scene10 = createSceneTen(); switchScenes(scene10);});
 
         bEditEvent = new Button("Edit an event");
         bEditEvent.setOnAction(e -> {
@@ -536,6 +564,9 @@ public class driver extends Application{
                 Desktop dt = Desktop.getDesktop();
                 dt.browse(uri);
                 eventList.get(pos).setCapacity(eventList.get(pos).getCapacity()-1);
+
+                scene13 = createSceneThirteen();
+                switchScenes(scene13);
             }catch(Exception ex){}
         });
 
@@ -546,6 +577,9 @@ public class driver extends Application{
                 Desktop dt = Desktop.getDesktop();
                 dt.browse(uri);
                 eventList.get(pos).setCapacity(eventList.get(pos).getCapacity()-1);
+
+                scene13 = createSceneThirteen();
+                switchScenes(scene13);
             }catch(Exception ex){}
         });
 
@@ -556,6 +590,9 @@ public class driver extends Application{
                 Desktop dt = Desktop.getDesktop();
                 dt.browse(uri);
                 eventList.get(pos).setCapacity(eventList.get(pos).getCapacity()-1);
+
+                scene13 = createSceneThirteen();
+                switchScenes(scene13);
             }catch(Exception ex){}
         });
 
@@ -572,6 +609,44 @@ public class driver extends Application{
     }
 
     private Scene createSceneTen(){
+        createName = new TextField();
+        createDesc = new TextField();
+        createCap = new TextField();
+        createInvName = new TextField();
+        createWorker = new TextField();
+        createDate = new TextField();
+        createPrice = new TextField();
+
+        createMessage = new Label("");
+
+        bCreate = new Button("Create new event");
+        bCreate.setOnAction(e -> {
+            if(!createName.getText().isEmpty() 
+                && !createDesc.getText().isEmpty() 
+                && !createCap.getText().isEmpty() 
+                && !createInvName.getText().isEmpty() 
+                && !createWorker.getText().isEmpty() && !createDate.getText().isEmpty() && !createPrice.getText().isEmpty()){
+
+                    
+            }else {
+                createMessage.setText("Please make sure to fill everything.");
+            }
+        });
+
+        bCancelCreate = new Button("Back");
+        bCancelCreate.setOnAction(e -> {scene6 = createSceneSix(); switchScenes(scene6);});
+
+        vBox10 = new VBox();
+        vBox10.setAlignment(Pos.TOP_CENTER);
+        vBox10.setSpacing(20);
+
+        hBox10_buttons = new HBox();
+        hBox10_buttons.setAlignment(Pos.TOP_CENTER);
+        hBox10_buttons.setSpacing(20);
+
+        hBox10_buttons.getChildren().addAll(bCreate, bCancelCreate);
+        vBox10.getChildren().addAll(createName, createDesc, createCap, createInvName, createPrice, createDate, createWorker, hBox10_buttons, createMessage);
+        scene10 = new Scene(vBox10, 300, 450);
         return scene10;
     }
 
@@ -645,6 +720,21 @@ public class driver extends Application{
         return scene12;
     }
 
+    private Scene createSceneThirteen(){
+        thankYouLabel = new Label("Thank you for registering for this event.");
+
+        bPaid = new Button("Back to events page");
+        bPaid.setOnAction(e -> {scene7 = createSceneSeven(); switchScenes(scene7);});
+
+        vBox13 = new VBox();
+        vBox13.setAlignment(Pos.BASELINE_CENTER);
+        vBox13.setSpacing(30);
+        
+        vBox13.getChildren().addAll(thankYouLabel, bPaid);
+        scene13 = new Scene(vBox13, 300, 200);
+        return scene13;
+    }
+  
     private void switchScenes(Scene scene){
         stage.setScene(scene);
     }
