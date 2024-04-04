@@ -16,7 +16,7 @@ class EventTest {
     void setUp() {
         inventory = new Inventory("Resistance Bands", 50);
         gymWorker = new GymWorker("Lize Monroe", "Instructor", "lmonroe@gmail.com", "5067653398");
-        date = LocalDate.of(2023, 10, 5);
+        date = LocalDate.of(2024, 04, 03);
         event = new Event("Pilates Class", 20, inventory, 25.0, date, gymWorker);
     }
 
@@ -29,7 +29,7 @@ class EventTest {
         assertEquals(gymWorker, event.getGymWorker());
         Inventory newInventory = new Inventory("Weighted Balls", 10);
         GymWorker newGymWorker = new GymWorker("Dan Ennes", "Trainer", "dan15@gmail.com", "2269224587");
-        LocalDate newDate = LocalDate.of(2023, 11, 5);
+        LocalDate newDate = LocalDate.of(2024, 04, 5);
         event.setName("Cardio Blast");
         event.setCapacity(30);
         event.setPrice(30.0);
@@ -45,7 +45,7 @@ class EventTest {
 
     @Test
     void testToString() {
-        String expected = "Event: Pilates Class Max. capacity: 20 The price: $25.0 Date: 2023-10-05 Instructor name: Lize Monroe.\n";
+        String expected = "Event: Pilates Class Max. capacity: 20 The price: $25.0 Date: 2024-04-03 Instructor name: Lize Monroe.\n";
         assertEquals(expected, event.toString());
     }
 }
