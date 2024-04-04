@@ -13,7 +13,6 @@ public class GymWorker
     private String role;
     private String email;
     private String phoneNumber;
-    private ArrayList<LocalDate> dateList;
 
     public GymWorker(String name, String role, String email, String phoneNumber, String password) 
     {
@@ -66,15 +65,15 @@ public class GymWorker
 
     public void displayInfo() 
     {
-        System.out.println("Gym Worker ID: " + String.format("%04d", id) + ", Name: " + name + ", Role: " + role
+        System.out.println("Name: " + name + ", Role: " + role
                 + ", Email: " + email + ", Phone: " + phoneNumber);
     }
 
     public static void main(String[] args) 
     {
-        GymWorker worker1 = new GymWorker("John Doe", "Trainer", "doe@gmail.com", "5063346521");
-        GymWorker worker2 = new GymWorker("Jane Smith", "Receptionist", "smithj@yahoo.com", "5061256744");
-        GymWorker worker3 = new GymWorker("Yohanne Noume", "Yoga Instructor", "noume@yahoo.com", "5078956744");
+        GymWorker worker1 = new GymWorker("John Doe", "Trainer", "doe@gmail.com", "5063346521", "DoesApples");
+        GymWorker worker2 = new GymWorker("Jane Smith", "Receptionist", "smithj@yahoo.com", "5061256744", "41261");
+        GymWorker worker3 = new GymWorker("Yohanne Noume", "Yoga Instructor", "noume@yahoo.com", "5078956744", "password123");
         worker1.displayInfo();
         worker2.displayInfo();
         worker3.displayInfo();

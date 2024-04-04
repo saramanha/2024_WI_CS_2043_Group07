@@ -597,7 +597,6 @@ public class driver extends Application{
 
 
 /*
- * Fix GymWorker class to include password (String)
  * Add csv methods
  * Create event for workers
  * Edit events for workers
