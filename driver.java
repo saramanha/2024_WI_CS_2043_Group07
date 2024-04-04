@@ -28,6 +28,7 @@ public class driver extends Application{
     private ArrayList<Button> eventButtons = new ArrayList<>();
     private String[] emails = {"@gmail.com", "@outlook.com"};
     private Member newUser;
+    private Event newEvent;
 
     //Scene 1: Deciding if it's a member or worker using the application.
     private Scene scene1;
@@ -127,11 +128,9 @@ public class driver extends Application{
     private Label eventPrice;
     private Label eventDate;
     private Label eventInventory;
-    private Label eventWorker;
 
     private VBox vBox8;
     private HBox hBox8_buttons;
-    private HBox hBox8_DateWorker;
     private HBox hBox8_CapPrice;
 
     //Scene 9:
@@ -155,8 +154,20 @@ public class driver extends Application{
     private TextField createWorker;
     private TextField createDate;
     private Label createMessage;
+    private Label createNameLabel;
+    private Label createCapLabel;
+    private Label createInvLabel;
+    private Label createWorkerLabel;
+    private Label createDateLabel;
+    private Label createPriceLabel;
 
     private VBox vBox10;
+    private HBox hBox10_name;
+    private HBox hBox10_cap;
+    private HBox hBox10_inv;
+    private HBox hBox10_worker;
+    private HBox hBox10_date;
+    private HBox hBox10_price;
     private HBox hBox10_buttons;
 
     //Scene 11;
@@ -181,12 +192,19 @@ public class driver extends Application{
     private VBox vBox12;
     private HBox hBox12_buttons;
 
-    //Scene 13;
+    //Scene 13:
     private Scene scene13;
     private Button bPaid;
     private Label thankYouLabel;
 
     private VBox vBox13;
+
+    //Scene 14:
+    private Scene scene14;
+    private Button bCreateFinish;
+    private Label createFinishMessage;
+
+    private VBox vBox14;
 
     @Override
     public void start(Stage primaryStage) throws IOException{
@@ -196,11 +214,11 @@ public class driver extends Application{
         //Testing.
         memberList.add(new Member("Teoman Gur", "@gmail.com", "5069218321", 1021));
         workerList.add(new GymWorker("Teoman", "Role", "Email", "Phone", "password"));
-        inventoryList.add(new Inventory("Yoga", 10));
+        inventoryList.add(new Inventory("Yoga Mats", 40));
 
-        eventList.add(new Event("Testing1", "Description1", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 12, 6) ,workerList.get(0)));
-        eventList.add(new Event("Testing2", "Description2", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 10, 10) ,workerList.get(0)));
-        eventList.add(new Event("Testing3", "Description3", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 7, 25) ,workerList.get(0)));
+        eventList.add(new Event("Testing1", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 12, 6) ,"Teoman"));
+        eventList.add(new Event("Testing2", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 10, 10) ,"Teoman"));
+        eventList.add(new Event("Testing3", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 7, 25) ,"Teoman"));
         //Testing end.
 
         scene1 = createSceneOne();
@@ -515,13 +533,11 @@ public class driver extends Application{
 
         eventName = new Label("Event " + (pos+1) + ": " + current.getName());
         eventName.setFont(new Font(24));
-        eventDesc = new Label(current.getDescription());
+        eventDesc = new Label("\tJoin us for " + current.getName() + " class in our gym. \nThis class is directed by our own instructor: \n\t\t" + current.getGymWorkerName());
         eventDesc.setFont(new Font(13));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
         eventDate = new Label(current.getDate().format(formatter));
-
-        eventWorker = new Label("Instructor: " + current.getGymWorkerName());
 
         eventCap = new Label("Current Capacity: " + current.getCapacity());
         eventPrice = new Label("Total Price: " + current.getPrice());
@@ -532,6 +548,10 @@ public class driver extends Application{
         bPaymentPage = new Button("Continue with payment");
         bPaymentPage.setOnAction(e -> {scene9 = createSceneNine(pos); switchScenes(scene9);});
 
+        if(current.getCapacity() == 0){
+            bPaymentPage.setDisable(true);
+        }
+
         vBox8 = new VBox();
         vBox8.setAlignment(Pos.TOP_CENTER);
         vBox8.setSpacing(10);
@@ -540,18 +560,13 @@ public class driver extends Application{
         hBox8_buttons.setAlignment(Pos.TOP_CENTER);
         hBox8_buttons.setSpacing(10);
 
-        hBox8_DateWorker = new HBox();
-        hBox8_DateWorker.setAlignment(Pos.TOP_CENTER);
-        hBox8_DateWorker.setSpacing(20);
-
         hBox8_CapPrice = new HBox();
         hBox8_CapPrice.setAlignment(Pos.TOP_CENTER);
         hBox8_CapPrice.setSpacing(20);
 
         hBox8_buttons.getChildren().addAll(bPaymentPage, bBackEventList);
-        hBox8_DateWorker.getChildren().addAll(eventDate, eventWorker);
         hBox8_CapPrice.getChildren().addAll(eventCap, eventPrice);
-        vBox8.getChildren().addAll(eventName, hBox8_DateWorker, eventDesc, hBox8_CapPrice, hBox8_buttons);
+        vBox8.getChildren().addAll(eventName, eventDate, eventDesc, hBox8_CapPrice, hBox8_buttons);
         scene8 = new Scene(vBox8, 300, 200);
         return scene8;
     }
@@ -609,8 +624,14 @@ public class driver extends Application{
     }
 
     private Scene createSceneTen(){
+        createNameLabel = new Label("Name of the event: ");
+        createCapLabel = new Label("Capacity of this event: ");
+        createInvLabel = new Label("Type of inventory: ");
+        createWorkerLabel = new Label("Instrector name: ");
+        createDateLabel = new Label("The date of the event: ");
+        createPriceLabel = new Label("Price of this event: ");
+
         createName = new TextField();
-        createDesc = new TextField();
         createCap = new TextField();
         createInvName = new TextField();
         createWorker = new TextField();
@@ -621,13 +642,25 @@ public class driver extends Application{
 
         bCreate = new Button("Create new event");
         bCreate.setOnAction(e -> {
-            if(!createName.getText().isEmpty() 
-                && !createDesc.getText().isEmpty() 
-                && !createCap.getText().isEmpty() 
-                && !createInvName.getText().isEmpty() 
+            if(!createName.getText().isEmpty() && !createCap.getText().isEmpty() && !createInvName.getText().isEmpty() 
                 && !createWorker.getText().isEmpty() && !createDate.getText().isEmpty() && !createPrice.getText().isEmpty()){
+                    boolean contains = false;
+                    for(int i = 0; i < inventoryList.size();i++){
+                        if(inventoryList.get(i).getType().compareTo(createInvName.getText())==0){
+                            contains = true;
+                            newEvent = new Event(createName.getText(), Integer.parseInt(createCap.getText()), inventoryList.get(i), Double.parseDouble(createPrice.getText()), LocalDate.parse(createDate.getText()), createWorker.getText());
+                            break;
+                        }
+                    }
+                    if(inventoryList.size() == 0 || !contains){
+                        Inventory newInventory = new Inventory(createInvName.getText(), Integer.parseInt(createCap.getText()));
+                        inventoryList.add(newInventory);
+                        newEvent = new Event(createName.getText(), Integer.parseInt(createCap.getText()), newInventory, Double.parseDouble(createPrice.getText()), LocalDate.parse(createDate.getText()), createWorker.getText());
+                    }
+                    eventList.add(newEvent);
 
-                    
+                    scene14 = createSceneFourteen();
+                    switchScenes(scene14);
             }else {
                 createMessage.setText("Please make sure to fill everything.");
             }
@@ -640,13 +673,43 @@ public class driver extends Application{
         vBox10.setAlignment(Pos.TOP_CENTER);
         vBox10.setSpacing(20);
 
+        hBox10_name = new HBox();
+        hBox10_name.setAlignment(Pos.TOP_CENTER);
+        hBox10_name.setSpacing(10);
+
+        hBox10_cap = new HBox();
+        hBox10_cap.setAlignment(Pos.TOP_CENTER);
+        hBox10_cap.setSpacing(10);
+
+        hBox10_inv = new HBox();
+        hBox10_inv.setAlignment(Pos.TOP_CENTER);
+        hBox10_inv.setSpacing(10);
+
+        hBox10_date = new HBox();
+        hBox10_date.setAlignment(Pos.TOP_CENTER);
+        hBox10_date.setSpacing(10);
+
+        hBox10_price = new HBox();
+        hBox10_price.setAlignment(Pos.TOP_CENTER);
+        hBox10_price.setSpacing(10);
+
+        hBox10_worker = new HBox();
+        hBox10_worker.setAlignment(Pos.TOP_CENTER);
+        hBox10_worker.setSpacing(10);
+
         hBox10_buttons = new HBox();
         hBox10_buttons.setAlignment(Pos.TOP_CENTER);
         hBox10_buttons.setSpacing(20);
 
+        hBox10_name.getChildren().addAll(createNameLabel, createName);
+        hBox10_cap.getChildren().addAll(createCapLabel, createCap);
+        hBox10_inv.getChildren().addAll(createInvLabel, createInvName);
+        hBox10_date.getChildren().addAll(createDateLabel, createDate);
+        hBox10_price.getChildren().addAll(createPriceLabel, createPrice);
+        hBox10_worker.getChildren().addAll(createWorkerLabel, createWorker);
         hBox10_buttons.getChildren().addAll(bCreate, bCancelCreate);
-        vBox10.getChildren().addAll(createName, createDesc, createCap, createInvName, createPrice, createDate, createWorker, hBox10_buttons, createMessage);
-        scene10 = new Scene(vBox10, 300, 450);
+        vBox10.getChildren().addAll(hBox10_name, hBox10_cap, hBox10_inv, hBox10_date, hBox10_price, hBox10_worker, hBox10_buttons, createMessage);
+        scene10 = new Scene(vBox10, 350, 400);
         return scene10;
     }
 
@@ -697,7 +760,6 @@ public class driver extends Application{
         Event editCurrent = eventList.get(pos);
 
         editEventName = new TextField(editCurrent.getName());
-        editEventDesc = new TextField(editCurrent.getDescription());
         editEventCap = new TextField(Integer.toString(editCurrent.getCapacity()));
 
         bEditEventBack = new Button("Back");
@@ -715,7 +777,7 @@ public class driver extends Application{
         hBox12_buttons.setSpacing(20);
 
         hBox12_buttons.getChildren().addAll(bEditEventFinish, bEditEventBack);
-        vBox12.getChildren().addAll(editEventName, editEventDesc, editEventCap, hBox12_buttons);
+        vBox12.getChildren().addAll(editEventName, editEventCap, hBox12_buttons);
         scene12 = new Scene(vBox12, 300, 200);
         return scene12;
     }
@@ -735,6 +797,21 @@ public class driver extends Application{
         return scene13;
     }
   
+    private Scene createSceneFourteen(){
+        createFinishMessage = new Label("New event has been added to the list");
+
+        bCreateFinish = new Button("Back to options");
+        bCreateFinish.setOnAction(e -> {scene6 = createSceneSix(); switchScenes(scene6);});
+
+        vBox14 = new VBox();
+        vBox14.setAlignment(Pos.TOP_CENTER);
+        vBox14.setSpacing(20);
+
+        vBox14.getChildren().addAll(createFinishMessage, bCreateFinish);
+        scene14 = new Scene(vBox14, 300, 200);
+        return scene14;
+    }
+
     private void switchScenes(Scene scene){
         stage.setScene(scene);
     }
@@ -769,7 +846,6 @@ public class driver extends Application{
 
 /*
  * Add csv methods
- * Create event for workers
  * Promotion????
  * Once we have csv, include a method to check the pass events + add ArrayList<Event> passEvents
  */
