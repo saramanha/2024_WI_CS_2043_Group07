@@ -13,7 +13,7 @@ public class Event {
 	private GymWorker gymWorker;
 	
 
-	private Event(String name, String description, int capacity, Inventory inventory, double price, LocalDate date, GymWorker gymWorker){
+	public Event(String name, String description, int capacity, Inventory inventory, double price, LocalDate date, GymWorker gymWorker){
 		this.name = name;
 		this.description = description;
 		this.capacity = capacity;

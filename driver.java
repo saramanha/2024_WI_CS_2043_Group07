@@ -1,7 +1,9 @@
 import java.io.IOException;
+import java.lang.reflect.Member;
 import java.net.URI;
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -14,6 +16,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import java.awt.Desktop;
 
@@ -21,7 +24,7 @@ public class driver extends Application{
     private Stage stage;
     private ArrayList<Member> memberList = new ArrayList<>();
     private ArrayList<Event> eventList = new ArrayList<>();
-    private ArrayList<GymWorker> workerList = new ArrayList<>(); //This is not used yet
+    private ArrayList<GymWorker> workerList = new ArrayList<>();
     private ArrayList<Inventory> inventoryList = new ArrayList<>();
     private ArrayList<Button> eventButtons = new ArrayList<>();
     private Member newUser;
@@ -118,9 +121,17 @@ public class driver extends Application{
     private Scene scene8;
     private Button bBackEventList;
     private Button bPaymentPage;
+    private Label eventName;
+    private Label eventDesc;
+    private Label eventCap;
+    private Label eventPrice;
+    private Label eventDate;
+    private Label eventInventory;
+    private Label eventWorker;
 
     private VBox vBox8;
     private HBox hBox8_buttons;
+    private HBox hBox8_DateWorker;
 
     //Scene 9:
     private Scene scene9;
@@ -147,6 +158,13 @@ public class driver extends Application{
 
     //Scene 12;
     private Scene scene12;
+    private TextField editEventName;
+    private TextField editEventDesc;
+    private TextField editEventCap;
+    private Button bEditEventBack;
+    private Button bEditEventFinish;
+
+    private VBox vBox12;
 
     @Override
     public void start(Stage primaryStage) throws IOException{
@@ -464,7 +482,18 @@ public class driver extends Application{
     }
 
     private Scene createSceneEight(int pos){
-        // Event current = eventList.get(pos);
+        Event current = eventList.get(pos); 
+
+        eventName = new Label("Event " + (pos+1) + ": " + current.getName());
+        eventName.setFont(new Font(24));
+        eventDesc = new Label(current.getDescription());
+        eventDesc.setFont(new Font(13));
+
+        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+        // eventDate = new Label(current.getDate().format(formatter));
+
+        // eventWorker = new Label(current.getGymWorkerName());
+
 
         bBackEventList = new Button("Back");
         bBackEventList.setOnAction(e -> {scene7 = createSceneSeven(); switchScenes(scene7);});
@@ -476,12 +505,17 @@ public class driver extends Application{
         vBox8.setAlignment(Pos.TOP_CENTER);
         vBox8.setSpacing(10);
 
+        // hBox8_DateWorker = new HBox();
+        // hBox8_DateWorker.setAlignment(Pos.TOP_CENTER);
+        // hBox8_DateWorker.setSpacing(10);
+
         hBox8_buttons = new HBox();
         hBox8_buttons.setAlignment(Pos.TOP_CENTER);
         hBox8_buttons.setSpacing(10);
 
         hBox8_buttons.getChildren().addAll(bPaymentPage, bBackEventList);
-        vBox8.getChildren().add(hBox8_buttons);
+        // hBox8_DateWorker.getChildren().addAll(eventDate, eventWorker);
+        vBox8.getChildren().addAll(eventName, eventDesc, hBox8_buttons);
         scene8 = new Scene(vBox8, 300, 200);
         return scene8;
     }
@@ -493,6 +527,7 @@ public class driver extends Application{
                 URI uri = new URI("https://www.paypal.com");
                 Desktop dt = Desktop.getDesktop();
                 dt.browse(uri);
+                eventList.get(pos).setCapacity(eventList.get(pos).getCapacity()-1);
             }catch(Exception ex){}
         });
 
@@ -502,6 +537,7 @@ public class driver extends Application{
                 URI uri = new URI("https://pay.google.com");
                 Desktop dt = Desktop.getDesktop();
                 dt.browse(uri);
+                eventList.get(pos).setCapacity(eventList.get(pos).getCapacity()-1);
             }catch(Exception ex){}
         });
 
@@ -511,6 +547,7 @@ public class driver extends Application{
                 URI uri = new URI("https://www.apple.com/apple-pay/");
                 Desktop dt = Desktop.getDesktop();
                 dt.browse(uri);
+                eventList.get(pos).setCapacity(eventList.get(pos).getCapacity()-1);
             }catch(Exception ex){}
         });
 
@@ -574,6 +611,21 @@ public class driver extends Application{
     }
 
     private Scene createSceneTwelve(int pos){
+        Event editCurrent = eventList.get(pos);
+
+        editEventName = new TextField(editCurrent.getName());
+        editEventDesc = new TextField(editCurrent.getDescription());
+        editEventCap = new TextField(Integer.toString(editCurrent.getCapacity()));
+
+        bEditEventBack = new Button("Back");
+        bEditEventBack.setOnAction(e -> {scene11 = createSceneEleven(); switchScenes(scene11);});
+
+        vBox12 = new VBox();
+        vBox12.setAlignment(Pos.TOP_CENTER);
+        vBox12.setSpacing(10);
+
+        vBox12.getChildren().addAll(editEventName, editEventDesc, editEventCap, bEditEventBack);
+        scene12 = new Scene(vBox12, 300, 200);
         return scene12;
     }
 
@@ -594,10 +646,12 @@ public class driver extends Application{
 
     public void handleEditButtons(ActionEvent e){
         for(int i = 0; i < eventButtons.size(); i++){
-            System.out.println("Button " + (i+1) + " pressed");
-            scene12 = createSceneTwelve(i);
-            switchScenes(scene12);
-            break;
+            if(e.getSource() == eventButtons.get(i)){
+                System.out.println("Button " + (i+1) + " pressed");
+                scene12 = createSceneTwelve(i);
+                switchScenes(scene12);
+                break;
+            }
         }
     }
     public static void main(String[] args) {
@@ -610,7 +664,6 @@ public class driver extends Application{
 /*
  * Add csv methods
  * Create event for workers
- * Edit events for workers
  * Promotion????
  * Once we have csv, include a method to check the pass events + add ArrayList<Event> passEvents
  */
