@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -21,6 +22,7 @@ public class driver extends Application{
     private ArrayList<Member> memberList = new ArrayList<>();
     private ArrayList<Event> eventList = new ArrayList<>();
     private ArrayList<GymWorker> workerList = new ArrayList<>(); //This is not used yet
+    private ArrayList<Inventory> inventoryList = new ArrayList<>();
     private ArrayList<Button> eventButtons = new ArrayList<>();
     private Member newUser;
 
@@ -143,6 +145,9 @@ public class driver extends Application{
     private VBox vBox11_buttons;
     private HBox hBox11_registerMessage;
 
+    //Scene 12;
+    private Scene scene12;
+
     @Override
     public void start(Stage primaryStage) throws IOException{
         stage = primaryStage;
@@ -150,15 +155,12 @@ public class driver extends Application{
 
         //Testing.
         memberList.add(new Member("Teoman Gur", "@gmail.com", "5069218321", 1021));
-        workerList.add(new GymWorker("Teoman", "Role", "Email", "Phone"));
+        workerList.add(new GymWorker("Teoman", "Role", "Email", "Phone", "password"));
+        inventoryList.add(new Inventory("Yoga", 10));
 
-        eventList.add(new Event("Testing1", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing2", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing3", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing4", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing5", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing6", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
-        eventList.add(new Event("Testing7", 10, 43.10, new GymWorker("name", STYLESHEET_CASPIAN, STYLESHEET_MODENA, STYLESHEET_CASPIAN)));
+        eventList.add(new Event("Testing1", "Description1", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 12, 6) ,workerList.get(0)));
+        eventList.add(new Event("Testing2", "Description2", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 10, 10) ,workerList.get(0)));
+        eventList.add(new Event("Testing3", "Description3", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 7, 25) ,workerList.get(0)));
         //Testing end.
 
         scene1 = createSceneOne();
@@ -291,7 +293,7 @@ public class driver extends Application{
             boolean empExist = false;
             if(empNameText.getText().compareTo("")!=0 && empPassText.getText().compareTo("")!=0){
                 for(int i = 0; i < workerList.size(); i++){
-                    if(workerList.get(i).getName().compareTo(empNameText.getText())==0){ //&& workerList.get(i).getPass.compareTo(empPassText)==0
+                    if(workerList.get(i).getName().compareTo(empNameText.getText())==0 && workerList.get(i).getPassword().compareTo(empPassText.getText())==0){ 
                         empExist = true;
                     }
                 }
@@ -571,6 +573,10 @@ public class driver extends Application{
         return scene11;
     }
 
+    private Scene createSceneTwelve(int pos){
+        return scene12;
+    }
+
     private void switchScenes(Scene scene){
         stage.setScene(scene);
     }
@@ -587,7 +593,12 @@ public class driver extends Application{
     }
 
     public void handleEditButtons(ActionEvent e){
-
+        for(int i = 0; i < eventButtons.size(); i++){
+            System.out.println("Button " + (i+1) + " pressed");
+            scene12 = createSceneTwelve(i);
+            switchScenes(scene12);
+            break;
+        }
     }
     public static void main(String[] args) {
         launch(args);
