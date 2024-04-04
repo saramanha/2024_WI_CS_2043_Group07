@@ -127,7 +127,6 @@ public class driver extends Application{
     private Label eventCap;
     private Label eventPrice;
     private Label eventDate;
-    private Label eventInventory;
 
     private VBox vBox8;
     private HBox hBox8_buttons;
@@ -147,7 +146,6 @@ public class driver extends Application{
     private Button bCreate;
     private Button bCancelCreate;
     private TextField createName;
-    private TextField createDesc;
     private TextField createCap;
     private TextField createInvName;
     private TextField createPrice;
@@ -184,13 +182,29 @@ public class driver extends Application{
     //Scene 12;
     private Scene scene12;
     private TextField editEventName;
-    private TextField editEventDesc;
     private TextField editEventCap;
+    private TextField editEventDate;
+    private TextField editEventPrice;
+    private TextField editEventWorker;
+    private TextField editEventInv;
+    private Label editEventNameLabel;
+    private Label editEventCapLabel;
+    private Label editEventInvLabel;
+    private Label editEventPriceLabel;
+    private Label editEventDateLabel;
+    private Label editEventWorkerLabel;
     private Button bEditEventBack;
     private Button bEditEventFinish;
+    private Label editMessage;
 
     private VBox vBox12;
     private HBox hBox12_buttons;
+    private HBox hBox12_name;
+    private HBox hBox12_cap;
+    private HBox hBox12_price;
+    private HBox hBox12_worker;
+    private HBox hBox12_inv;
+    private HBox hBox12_date;
 
     //Scene 13:
     private Scene scene13;
@@ -206,19 +220,32 @@ public class driver extends Application{
 
     private VBox vBox14;
 
+    //Scene 15:
+    private Scene scene15;
+    private Button bEditFinish;
+    private Label editFinishMessage;
+
+    private VBox vBox15;
     @Override
     public void start(Stage primaryStage) throws IOException{
         stage = primaryStage;
         stage.setTitle("GYM Events");
 
         //Testing.
-        memberList.add(new Member("Teoman Gur", "@gmail.com", "5069218321", 1021));
-        workerList.add(new GymWorker("Teoman", "Role", "Email", "Phone", "password"));
-        inventoryList.add(new Inventory("Yoga Mats", 40));
+        memberList.add(new Member("Teoman Gur", "tmngr@gmail.com", "5069218321", 1021));
+        memberList.add(new Member("Owen Dark", "dark_own@outlook.com", "5067243684", 1022));
 
-        eventList.add(new Event("Testing1", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 12, 6) ,"Teoman"));
-        eventList.add(new Event("Testing2", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 10, 10) ,"Teoman"));
-        eventList.add(new Event("Testing3", inventoryList.get(0).getAmount(), inventoryList.get(0), 43.10, LocalDate.of(2024, 7, 25) ,"Teoman"));
+        workerList.add(new GymWorker("Michael Scott", "Yoga Instructor", "Mich.Scott@gmail.com", "5068439825", "password123"));
+        workerList.add(new GymWorker("John Johnson", "Pilates Instructor", "JJohnson@oulook.com", "5068985236", "doubleName"));
+        workerList.add(new GymWorker("Amelia Smith", "Meditation Instructor", "Ames.D@gmail.com", "5098563289", "RandomPassword"));
+        
+        inventoryList.add(new Inventory("Yoga Mats", 40));
+        inventoryList.add(new Inventory("Pilates Mats", 40));
+        inventoryList.add(new Inventory("Meditation Pillows", 40));
+
+        eventList.add(new Event("Yoga", 35, inventoryList.get(0), 30.00, LocalDate.of(2024, 04, 13) ,"Michael Scott"));
+        eventList.add(new Event("Pilates", 28, inventoryList.get(1), 32.00, LocalDate.of(2024, 04, 17) ,"John Johnson"));
+        eventList.add(new Event("Meditation", 40, inventoryList.get(2), 29.99, LocalDate.of(2024, 04, 25) ,"Amelia Smith"));
         //Testing end.
 
         scene1 = createSceneOne();
@@ -627,7 +654,7 @@ public class driver extends Application{
         createNameLabel = new Label("Name of the event: ");
         createCapLabel = new Label("Capacity of this event: ");
         createInvLabel = new Label("Type of inventory: ");
-        createWorkerLabel = new Label("Instrector name: ");
+        createWorkerLabel = new Label("Instructor name: ");
         createDateLabel = new Label("The date of the event: ");
         createPriceLabel = new Label("Price of this event: ");
 
@@ -645,10 +672,10 @@ public class driver extends Application{
             if(!createName.getText().isEmpty() && !createCap.getText().isEmpty() && !createInvName.getText().isEmpty() 
                 && !createWorker.getText().isEmpty() && !createDate.getText().isEmpty() && !createPrice.getText().isEmpty()){
                     boolean contains = false;
-                    for(int i = 0; i < inventoryList.size();i++){
+                    int i;
+                    for(i = 0; i < inventoryList.size();i++){
                         if(inventoryList.get(i).getType().compareTo(createInvName.getText())==0){
                             contains = true;
-                            newEvent = new Event(createName.getText(), Integer.parseInt(createCap.getText()), inventoryList.get(i), Double.parseDouble(createPrice.getText()), LocalDate.parse(createDate.getText()), createWorker.getText());
                             break;
                         }
                     }
@@ -656,11 +683,21 @@ public class driver extends Application{
                         Inventory newInventory = new Inventory(createInvName.getText(), Integer.parseInt(createCap.getText()));
                         inventoryList.add(newInventory);
                         newEvent = new Event(createName.getText(), Integer.parseInt(createCap.getText()), newInventory, Double.parseDouble(createPrice.getText()), LocalDate.parse(createDate.getText()), createWorker.getText());
-                    }
-                    eventList.add(newEvent);
+                        eventList.add(newEvent);
 
-                    scene14 = createSceneFourteen();
-                    switchScenes(scene14);
+                        scene14 = createSceneFourteen();
+                        switchScenes(scene14);
+                    }else {
+                        if(Integer.parseInt(createCap.getText()) <= inventoryList.get(i).getAmount()){
+                            newEvent = new Event(createName.getText(), Integer.parseInt(createCap.getText()), inventoryList.get(i), Double.parseDouble(createPrice.getText()), LocalDate.parse(createDate.getText()), createWorker.getText());
+                            eventList.add(newEvent);
+
+                            scene14 = createSceneFourteen();
+                            switchScenes(scene14);
+                        }else{
+                            createMessage.setText("Capacity can't be more than inventory amount.\n\tPlease input maximum of " + inventoryList.get(i).getAmount());
+                        }
+                    }
             }else {
                 createMessage.setText("Please make sure to fill everything.");
             }
@@ -759,14 +796,58 @@ public class driver extends Application{
     private Scene createSceneTwelve(int pos){
         Event editCurrent = eventList.get(pos);
 
+        editEventNameLabel = new Label("Current Event Name: ");
+        editEventCapLabel = new Label("Current Event Capacity: ");
+        editEventDateLabel = new Label("Current Event Date: ");
+        editEventPriceLabel = new Label("Current Event Price: ");
+        editEventWorkerLabel = new Label("Current Event Instructor: ");
+        editEventInvLabel = new Label("Current Inventory Name: ");
+
         editEventName = new TextField(editCurrent.getName());
         editEventCap = new TextField(Integer.toString(editCurrent.getCapacity()));
+        editEventDate = new TextField(editCurrent.getDate().toString());
+        editEventPrice = new TextField(Double.toString(editCurrent.getPrice()));
+        editEventWorker = new TextField(editCurrent.getGymWorkerName());
+        editEventInv = new TextField(editCurrent.getInventoryName());
+
+        editMessage = new Label("");
 
         bEditEventBack = new Button("Back");
         bEditEventBack.setOnAction(e -> {scene11 = createSceneEleven(); switchScenes(scene11);});
 
         bEditEventFinish = new Button("Make the changes");
-        bEditEventFinish.setOnAction(e -> {});
+        bEditEventFinish.setOnAction(e -> {
+            if(!editEventName.getText().isEmpty() && !editEventCap.getText().isEmpty() && !editEventDate.getText().isEmpty() 
+                && !editEventPrice.getText().isEmpty() && !editEventWorker.getText().isEmpty() && !editEventInv.getText().isEmpty()){
+                    boolean contains = false;
+                    int i;
+                    for(i = 0; i < inventoryList.size();i++){
+                        if(inventoryList.get(i).getType().compareTo(editEventInv.getText())==0){
+                            contains = true;
+                            break;
+                        }
+                    }
+                    if(inventoryList.size() == 0 || !contains){
+                        Inventory newInventory = new Inventory(editEventInv.getText(), Integer.parseInt(editEventCap.getText()));
+                        inventoryList.add(newInventory);
+                        editCurrent.setAll(editEventName.getText(), Integer.valueOf(editEventCap.getText()), LocalDate.parse(editEventDate.getText()), Double.parseDouble(editEventPrice.getText()), editEventWorker.getText(), newInventory);
+
+                        scene15 = createSceneFifteen();
+                        switchScenes(scene15);
+                    }else{
+                        if(Integer.parseInt(editEventCap.getText()) <= inventoryList.get(i).getAmount()){
+                            editCurrent.setAll(editEventName.getText(), Integer.valueOf(editEventCap.getText()), LocalDate.parse(editEventDate.getText()), Double.parseDouble(editEventPrice.getText()), editEventWorker.getText(), inventoryList.get(i));
+
+                            scene15 = createSceneFifteen();
+                            switchScenes(scene15);
+                        }else{
+                            editMessage.setText("Capacity can't be more than inventory amount.\n\tPlease input maximum of " + inventoryList.get(i).getAmount());
+                        }
+                    }
+            }else{
+                editMessage.setText("Please make sure to fill everything.");
+            }
+        });
 
         vBox12 = new VBox();
         vBox12.setAlignment(Pos.TOP_CENTER);
@@ -774,11 +855,41 @@ public class driver extends Application{
 
         hBox12_buttons = new HBox();
         hBox12_buttons.setAlignment(Pos.TOP_CENTER);
-        hBox12_buttons.setSpacing(20);
+        hBox12_buttons.setSpacing(10);
 
+        hBox12_name = new HBox();
+        hBox12_name.setAlignment(Pos.TOP_CENTER);
+        hBox12_name.setSpacing(10);
+
+        hBox12_cap = new HBox();
+        hBox12_cap.setAlignment(Pos.TOP_CENTER);
+        hBox12_cap.setSpacing(10);
+
+        hBox12_price = new HBox();
+        hBox12_price.setAlignment(Pos.TOP_CENTER);
+        hBox12_price.setSpacing(10);
+
+        hBox12_date = new HBox();
+        hBox12_date.setAlignment(Pos.TOP_CENTER);
+        hBox12_date.setSpacing(10);
+
+        hBox12_inv = new HBox();
+        hBox12_inv.setAlignment(Pos.TOP_CENTER);
+        hBox12_inv.setSpacing(10);
+
+        hBox12_worker = new HBox();
+        hBox12_worker.setAlignment(Pos.TOP_CENTER);
+        hBox12_worker.setSpacing(10);
+
+        hBox12_name.getChildren().addAll(editEventNameLabel, editEventName);
+        hBox12_cap.getChildren().addAll(editEventCapLabel, editEventCap);
+        hBox12_price.getChildren().addAll(editEventPriceLabel, editEventPrice);
+        hBox12_date.getChildren().addAll(editEventDateLabel, editEventDate);
+        hBox12_worker.getChildren().addAll(editEventWorkerLabel, editEventWorker);
+        hBox12_inv.getChildren().addAll(editEventInvLabel, editEventInv);
         hBox12_buttons.getChildren().addAll(bEditEventFinish, bEditEventBack);
-        vBox12.getChildren().addAll(editEventName, editEventCap, hBox12_buttons);
-        scene12 = new Scene(vBox12, 300, 200);
+        vBox12.getChildren().addAll(hBox12_name, hBox12_cap, hBox12_inv, hBox12_price, hBox12_date, hBox12_worker, hBox12_buttons, editMessage);
+        scene12 = new Scene(vBox12, 375, 400);
         return scene12;
     }
 
@@ -810,6 +921,21 @@ public class driver extends Application{
         vBox14.getChildren().addAll(createFinishMessage, bCreateFinish);
         scene14 = new Scene(vBox14, 300, 200);
         return scene14;
+    }
+
+    private Scene createSceneFifteen(){
+        editFinishMessage = new Label("Event has been edited.");
+
+        bEditFinish = new Button("Back to events list");
+        bEditFinish.setOnAction(e -> {scene11 = createSceneSix(); switchScenes(scene11);});
+
+        vBox15 = new VBox();
+        vBox15.setAlignment(Pos.TOP_CENTER);
+        vBox15.setSpacing(20);
+
+        vBox15.getChildren().addAll(editFinishMessage, bEditFinish);
+        scene15 = new Scene(vBox15, 300, 200);
+        return scene15;
     }
 
     private void switchScenes(Scene scene){
