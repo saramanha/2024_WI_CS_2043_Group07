@@ -1,7 +1,6 @@
 
 import java.util.*;
 import java.io.*;
-import java.time.LocalDate;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
 import java.util.Optional;
@@ -15,13 +14,11 @@ public class Inventory{
 	
 	private String type;
 	private int amount;
-	private ArrayList<LocalDate> booked;
 	static ArrayList<Inventory> list;
 
 	public Inventory(String type, int amount){
 		this.type = type;
 		this.amount = amount;
-		booked = new ArrayList<LocalDate>();
 	}
 	
 //getters and setters:
@@ -40,39 +37,13 @@ public class Inventory{
 	}
 
 
-	public String datesToString() {
-
-		String dates = "";
-		for(LocalDate l : booked){
-			
-			dates += l + ",";
-		}
-    	return dates;
-	}
-
-	public void addDate(LocalDate dateIn){ 
-
-	// Check if the date is not already in the list
-		if (!booked.contains(dateIn)) {
-        	booked.add(dateIn);
-        	updateFile(list);
-        }
-	}
-	//remove the date from the list
-	public void removeDate(LocalDate dateIn){
-		if (booked.contains(dateIn)){
-			booked.remove(dateIn);
-			updateFile(list);
-		}
-	}
-
 	//update File with a new array of Inventory items
-	public static void updateFile(ArrayList<Inventory> newList) {
+	public static void listToFile(ArrayList<Inventory> newList) {
 
         try (PrintWriter writer = new PrintWriter(file)) {
-            writer.println("Type,Amount, Dates");
+            writer.println("Type,Amount");
             for (Inventory inv : newList) {
-                writer.println(inv.getType() + "," + inv.getAmount() + "," + inv.datesToString());
+                writer.println(inv.getType() + "," + inv.getAmount());
             }
         } catch (IOException e) {
             System.out.println("Error updating file: " + e.getMessage());
@@ -82,12 +53,11 @@ public class Inventory{
 	//add inventory (to an array) and then update the file
 	public static void addInventory(Inventory invIn){
 		
-		list = fileToArray();
+		list = fileToList();
 		boolean added = false;
 
 		for(Inventory i : list){
 			
-			System.out.println(" list.get(i).getType() is  " + i.getType() );
 			if(i.getType().equals(invIn.getType())){
 				System.out.println("The " + invIn.getType() + " is already in the list\n");
 				added = true;
@@ -96,41 +66,41 @@ public class Inventory{
 		}
 			if(!added){
 				list.add(invIn);
-				updateFile(list);
+				listToFile(list);
 			}
 	}
 
 	public static void removeAllInventory(){
 
 		list.clear();
-		updateFile(list);
+		listToFile(list);
 	}
  
 //removes an inventory from an array and then updates a file
-	public static void remove(Inventory invIn){
+	public static void removeInventory(String typeIn){
 
-		list = fileToArray();
+		list = fileToList();
 
-		for(int i = 0; i < list.size(); i++){
 
-			if(list.get(i).getType().equals(invIn.getType())){
-
+		for(Inventory i : list){
+			if(i.getType().equals(typeIn)){
 				list.remove(i);
-				updateFile(list);
-				i = list.size();
+				listToFile(list);
+				break;
 			}
 		}
-			
+					
 	}
 
 
-	public static ArrayList<Inventory> fileToArray(){
+	public static ArrayList<Inventory> fileToList(){
 
-	ArrayList <Inventory> inventoryList = new ArrayList<Inventory>();
+		ArrayList <Inventory> inventoryList = new ArrayList<Inventory>();
 
-	try (Scanner scan = new Scanner(file)){
-		if(scan.hasNextLine()){
-			scan.nextLine();
+		try (Scanner scan = new Scanner(file)){
+		
+			if(scan.hasNextLine()){
+				scan.nextLine();
 		}
 
 		while(scan.hasNextLine()){
@@ -155,16 +125,16 @@ public class Inventory{
 
 //prints out all the Inventory
 public static void print(ArrayList<Inventory> inventoryList) {
-    System.out.printf("%-20s %-10s %-20s%n", "Type of Inventory", "Quantity", "Dates");
+    System.out.printf("%-20s %-10s%n", "Type of Inventory", "Quantity");
     for (Inventory i : inventoryList) {
-        System.out.printf("%-20s %-10d %-20s%n", i.getType(), i.getAmount(), i.datesToString());
+        System.out.printf("%-20s %-10d%n", i.getType(), i.getAmount());
     }
 }
 
-/* main class for testing 
+//main class for testing 
 public static void main(String[] args){
 
-	list = fileToArray();
+	list = fileToList();
 	System.out.println("Before any changes");
 	print(list);
 
@@ -173,28 +143,24 @@ public static void main(String[] args){
 	addInventory(inv1);
 	print(list);
 
-	System.out.println("After adding dates to yoga mats: \n");
-	inv1.addDate(LocalDate.of(2023, 8, 3));
-	inv1.addDate(LocalDate.of(2021, 6, 21));
-	print(list);
-
-	System.out.println("After removing one of the dates");
-	inv1.removeDate(LocalDate.of(2023, 8, 3));
-
-	print(list);
 	Inventory inv3 = new Inventory ("Yoga Mat", 40);
 	System.out.println("Trying to add the same inventory twice: ");
 	addInventory(inv3);
 	print(list);
 
 
+	System.out.println("After removing the yoga mat: ");
+	removeInventory("Yoga Mat");
+	print(list);
+
+
 	Inventory inv2 = new Inventory("Ball", 100);
 	System.out.println("After adding ball Inventory: \n");
-	list.add(inv2);
-	inv2.addDate(LocalDate.of(2012, 8, 9));
+	addInventory(inv2);
 	print(list);
+	
+
 }
-*/
 
 }
 
