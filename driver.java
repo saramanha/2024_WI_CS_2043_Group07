@@ -165,6 +165,7 @@ public class driver extends Application{
     private Button bEditEventFinish;
 
     private VBox vBox12;
+    private HBox hBox12_buttons;
 
     @Override
     public void start(Stage primaryStage) throws IOException{
@@ -373,7 +374,7 @@ public class driver extends Application{
                     }
                 }
                 if(exist){
-                    userIdMessage = new Label("Welcome back, " + "!");
+                    userIdMessage = new Label("Welcome back, " + userNameText.getText() + "!");
                     scene7 = createSceneSeven(); 
                     switchScenes(scene7);
                 }
@@ -627,11 +628,19 @@ public class driver extends Application{
         bEditEventBack = new Button("Back");
         bEditEventBack.setOnAction(e -> {scene11 = createSceneEleven(); switchScenes(scene11);});
 
+        bEditEventFinish = new Button("Make the changes");
+        bEditEventFinish.setOnAction(e -> {});
+
         vBox12 = new VBox();
         vBox12.setAlignment(Pos.TOP_CENTER);
         vBox12.setSpacing(10);
 
-        vBox12.getChildren().addAll(editEventName, editEventDesc, editEventCap, bEditEventBack);
+        hBox12_buttons = new HBox();
+        hBox12_buttons.setAlignment(Pos.TOP_CENTER);
+        hBox12_buttons.setSpacing(20);
+
+        hBox12_buttons.getChildren().addAll(bEditEventFinish, bEditEventBack);
+        vBox12.getChildren().addAll(editEventName, editEventDesc, editEventCap, hBox12_buttons);
         scene12 = new Scene(vBox12, 300, 200);
         return scene12;
     }
