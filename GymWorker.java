@@ -8,27 +8,24 @@ import java.time.LocalDate;
 public class GymWorker 
 {
 
-    private static int nextId = 1000; // Static variable for auto-incrementing IDs starting from 1000
-    private int id;
+    private String password;
     private String name;
     private String role;
     private String email;
     private String phoneNumber;
     private ArrayList<LocalDate> dateList;
 
-    public GymWorker(String name, String role, String email, String phoneNumber) 
+    public GymWorker(String name, String role, String email, String phoneNumber, String password) 
     {
-        this.id = nextId++; // Increment nextId for each new GymWorker
+        this.password = password;
         this.name = name;
         this.role = role;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        dateList = new ArrayList<LocalDate>();
-
     }
-    public int getId() 
+    public String getPassword() 
     {
-        return id;
+        return password;
     }
     public String getName() 
     {
@@ -47,7 +44,9 @@ public class GymWorker
     {
         return phoneNumber;
     }
-
+    public void setPassword(String password){
+        this.password = password;
+    }
     public void setEmail(String email) 
     {
         this.email = email;
@@ -56,7 +55,6 @@ public class GymWorker
     {
         this.phoneNumber = phoneNumber;
     }
-
     public void setName(String name) 
     {
         this.name = name;
@@ -64,18 +62,6 @@ public class GymWorker
     public void setRole(String role) 
     {
         this.role = role;
-    }
-
-    public boolean isAvailable(LocalDate dateIn){
-
-        for(LocalDate d : dateList){
-            if(d.isEqual(dateIn)){
-                return false;
-            }
-        }
-
-        return true;
-
     }
 
     public void displayInfo() 
