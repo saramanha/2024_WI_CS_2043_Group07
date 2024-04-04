@@ -84,6 +84,6 @@ public class Event {
 
 	// overriding toString()
 	public String toString(){
-		return "Event: " + name + " Max. capacity: " + capacity + " The price: $" + price + " Date: " + date + " Instructor name: " + gymWorker.getName() + ".\n" ;
+		return "Event: " + name + " Max. capacity: " + capacity + " The price: $" + price + " Date: " + date + " Instructor name: " + gymWorker.getName() + ".\n" ;	
 	}
 }
