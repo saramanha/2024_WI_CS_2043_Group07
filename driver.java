@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.lang.reflect.Member;
 import java.net.URI;
 import java.util.ArrayList;
 import java.time.LocalDate;
@@ -24,7 +23,7 @@ public class driver extends Application{
     private Stage stage;
     private ArrayList<Member> memberList = new ArrayList<>();
     private ArrayList<Event> eventList = new ArrayList<>();
-    private ArrayList<GymWorker> workerList = new ArrayList<>();
+    private ArrayList<GymWorker> workerList = new ArrayList<>(); //This is not used yet
     private ArrayList<Inventory> inventoryList = new ArrayList<>();
     private ArrayList<Button> eventButtons = new ArrayList<>();
     private Member newUser;
@@ -132,6 +131,7 @@ public class driver extends Application{
     private VBox vBox8;
     private HBox hBox8_buttons;
     private HBox hBox8_DateWorker;
+    private HBox hBox8_CapPrice;
 
     //Scene 9:
     private Scene scene9;
@@ -489,11 +489,13 @@ public class driver extends Application{
         eventDesc = new Label(current.getDescription());
         eventDesc.setFont(new Font(13));
 
-        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
-        // eventDate = new Label(current.getDate().format(formatter));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+        eventDate = new Label(current.getDate().format(formatter));
 
-        // eventWorker = new Label(current.getGymWorkerName());
+        eventWorker = new Label("Instructor: " + current.getGymWorkerName());
 
+        eventCap = new Label("Current Capacity: " + current.getCapacity());
+        eventPrice = new Label("Total Price: " + current.getPrice());
 
         bBackEventList = new Button("Back");
         bBackEventList.setOnAction(e -> {scene7 = createSceneSeven(); switchScenes(scene7);});
@@ -505,17 +507,22 @@ public class driver extends Application{
         vBox8.setAlignment(Pos.TOP_CENTER);
         vBox8.setSpacing(10);
 
-        // hBox8_DateWorker = new HBox();
-        // hBox8_DateWorker.setAlignment(Pos.TOP_CENTER);
-        // hBox8_DateWorker.setSpacing(10);
-
         hBox8_buttons = new HBox();
         hBox8_buttons.setAlignment(Pos.TOP_CENTER);
         hBox8_buttons.setSpacing(10);
 
+        hBox8_DateWorker = new HBox();
+        hBox8_DateWorker.setAlignment(Pos.TOP_CENTER);
+        hBox8_DateWorker.setSpacing(20);
+
+        hBox8_CapPrice = new HBox();
+        hBox8_CapPrice.setAlignment(Pos.TOP_CENTER);
+        hBox8_CapPrice.setSpacing(20);
+
         hBox8_buttons.getChildren().addAll(bPaymentPage, bBackEventList);
-        // hBox8_DateWorker.getChildren().addAll(eventDate, eventWorker);
-        vBox8.getChildren().addAll(eventName, eventDesc, hBox8_buttons);
+        hBox8_DateWorker.getChildren().addAll(eventDate, eventWorker);
+        hBox8_CapPrice.getChildren().addAll(eventCap, eventPrice);
+        vBox8.getChildren().addAll(eventName, hBox8_DateWorker, eventDesc, hBox8_CapPrice, hBox8_buttons);
         scene8 = new Scene(vBox8, 300, 200);
         return scene8;
     }
