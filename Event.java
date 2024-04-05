@@ -20,7 +20,7 @@ public class Event {
 	static File eventFile = new File("Event_DB.csv");
 	
 
-	public Event(String name, int capacity, Inventory inventory, double price, LocalDate date, String gymWorker){
+	public Event(String name, int capacity, Inventory inventory, double price, LocalDate date, String gymWorker, int attendees){
 
 			this.name = name;
 			this.capacity = capacity;
@@ -28,7 +28,7 @@ public class Event {
 			this.price = price;
 			this.date = date;
 			this.gymWorker = gymWorker;
-			this.attendees = 0;
+			this.attendees = attendees;
 		}
 	
 	public double getPrice(){

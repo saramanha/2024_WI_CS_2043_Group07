@@ -560,7 +560,8 @@ public class driver extends Application{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
         eventDate = new Label(current.getDate().format(formatter));
 
-        eventCap = new Label("Current Capacity: " + (current.getCapacity()-current.getAttendees()));
+        eventCap = new Label("Current Capacity: " + (
+            current.getCapacity()-current.getAttendees()));
         eventPrice = new Label("Total Price: " + current.getPrice());
 
         bBackEventList = new Button("Back");
@@ -888,6 +889,7 @@ public class driver extends Application{
     }
 
     private Scene createSceneThirteen(){
+        WFileEvent(eventList);
         thankYouLabel = new Label("Thank you for registering for this event.");
 
         bPaid = new Button("Back to events page");
@@ -982,9 +984,10 @@ public class driver extends Application{
                 	double priceIn = Double.parseDouble(rowScan.next());
                 	LocalDate dateIn = LocalDate.parse(rowScan.next());
                 	String gymWorkerIn = rowScan.next();
+                    int attendeesIn = Integer.parseInt(rowScan.next());
 
                     inventoryList.add(invIn);
-                	Event eventAdd = new Event(nameIn, capacityIn, invIn, priceIn, dateIn, gymWorkerIn);
+                	Event eventAdd = new Event(nameIn, capacityIn, invIn, priceIn, dateIn, gymWorkerIn, attendeesIn);
                 	eventList.add(eventAdd);
                 }
             }
@@ -996,9 +999,9 @@ public class driver extends Application{
 
     public static void WFileEvent(ArrayList<Event> listIn){
 		try(PrintWriter pw = new PrintWriter(eventFile)){
-			pw.println("Name,Capacity,Inventory,Price,Date,GymWorker");
+			pw.println("Name,Capacity,Inventory,Price,Date,GymWorker,Attendees");
 			for(Event e : listIn){
-                pw.println(e.getName() + "," + e.getCapacity() + "," + e.getInventoryName() + "," + e.getInventoryAmount() + "," + e.getPrice() + "," + e.getDate() + "," + e.getGymWorkerName());
+                pw.println(e.getName() + "," + e.getCapacity() + "," + e.getInventoryName() + "," + e.getInventoryAmount() + "," + e.getPrice() + "," + e.getDate() + "," + e.getGymWorkerName() + "," e.getAttendees());
 			}
 		}catch(IOException e){
 			 System.out.println("Error updating this file: " + e.getMessage());
