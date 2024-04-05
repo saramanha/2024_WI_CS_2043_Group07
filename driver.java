@@ -240,8 +240,11 @@ public class driver extends Application{
         stage.setTitle("GYM Events");
 
         //Testing.
+        RFileInv();
         RFileEvent();
         RFileMember();
+
+        workerList.add(new GymWorker("Teo", "Yoga", "email", "phone", "pass"));
 
         //Testing end.
 
@@ -976,6 +979,7 @@ public class driver extends Application{
 			while(scan.hasNextLine()){
 
 				String lineIn = scan.nextLine();
+                boolean exists = false;
 
 				try(Scanner rowScan = new Scanner(lineIn)){
 					rowScan.useDelimiter(",");
@@ -990,9 +994,20 @@ public class driver extends Application{
                 	String gymWorkerIn = rowScan.next();
                     int attendeesIn = Integer.parseInt(rowScan.next());
 
-                    inventoryList.add(invIn);
-                	Event eventAdd = new Event(nameIn, capacityIn, invIn, priceIn, dateIn, gymWorkerIn, attendeesIn);
-                	eventList.add(eventAdd);
+                    for(Inventory inv : inventoryList){
+                        if(inv.getType().compareTo(invIn.getType())==0){
+                            Event eventAdd = new Event(nameIn, capacityIn, inv, priceIn, dateIn, gymWorkerIn, attendeesIn);
+                            exists = true;
+                            eventList.add(eventAdd);
+                            break;
+                        }
+                    }
+                    if(!exists){
+                        inventoryList.add(invIn);
+                        WFileInv(inventoryList);
+                	    Event eventAdd = new Event(nameIn, capacityIn, invIn, priceIn, dateIn, gymWorkerIn, attendeesIn);
+                	    eventList.add(eventAdd);
+                    }
                 }
             }
                 
