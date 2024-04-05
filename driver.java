@@ -1,6 +1,10 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -21,14 +25,15 @@ import java.awt.Desktop;
 
 public class driver extends Application{
     private Stage stage;
-    private ArrayList<Member> memberList = new ArrayList<>();
-    private ArrayList<Event> eventList = new ArrayList<>();
-    private ArrayList<GymWorker> workerList = new ArrayList<>(); //This is not used yet
-    private ArrayList<Inventory> inventoryList = new ArrayList<>();
-    private ArrayList<Button> eventButtons = new ArrayList<>();
+    private static ArrayList<Member> memberList = new ArrayList<>();
+    private static ArrayList<Event> eventList = new ArrayList<>();
+    private static ArrayList<GymWorker> workerList = new ArrayList<>(); //This is not used yet
+    private static ArrayList<Inventory> inventoryList = new ArrayList<>();
+    private static ArrayList<Button> eventButtons = new ArrayList<>();
     private String[] emails = {"@gmail.com", "@outlook.com"};
     private Member newUser;
     private Event newEvent;
+    static File eventFile = new File("Event_DB.csv");
 
     //Scene 1: Deciding if it's a member or worker using the application.
     private Scene scene1;
@@ -233,19 +238,8 @@ public class driver extends Application{
 
         //Testing.
         memberList.add(new Member("Teoman Gur", "tmngr@gmail.com", "5069218321", 1021));
-        memberList.add(new Member("Owen Dark", "dark_own@outlook.com", "5067243684", 1022));
+        RFileEvent();
 
-        workerList.add(new GymWorker("Michael Scott", "Yoga Instructor", "Mich.Scott@gmail.com", "5068439825", "password123"));
-        workerList.add(new GymWorker("John Johnson", "Pilates Instructor", "JJohnson@oulook.com", "5068985236", "doubleName"));
-        workerList.add(new GymWorker("Amelia Smith", "Meditation Instructor", "Ames.D@gmail.com", "5098563289", "RandomPassword"));
-        
-        inventoryList.add(new Inventory("Yoga Mats", 40));
-        inventoryList.add(new Inventory("Pilates Mats", 40));
-        inventoryList.add(new Inventory("Meditation Pillows", 40));
-
-        eventList.add(new Event("Yoga", 35, inventoryList.get(0), 30.00, LocalDate.of(2024, 04, 13) ,"Michael Scott"));
-        eventList.add(new Event("Pilates", 28, inventoryList.get(1), 32.00, LocalDate.of(2024, 04, 17) ,"John Johnson"));
-        eventList.add(new Event("Meditation", 40, inventoryList.get(2), 29.99, LocalDate.of(2024, 04, 25) ,"Amelia Smith"));
         //Testing end.
 
         scene1 = createSceneOne();
@@ -566,7 +560,7 @@ public class driver extends Application{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
         eventDate = new Label(current.getDate().format(formatter));
 
-        eventCap = new Label("Current Capacity: " + current.getCapacity());
+        eventCap = new Label("Current Capacity: " + (current.getCapacity()-current.getAttendees()));
         eventPrice = new Label("Total Price: " + current.getPrice());
 
         bBackEventList = new Button("Back");
@@ -605,7 +599,7 @@ public class driver extends Application{
                 URI uri = new URI("https://www.paypal.com");
                 Desktop dt = Desktop.getDesktop();
                 dt.browse(uri);
-                eventList.get(pos).setCapacity(eventList.get(pos).getCapacity()-1);
+                eventList.get(pos).setAttendees(eventList.get(pos).getAttendees()+1);
 
                 scene13 = createSceneThirteen();
                 switchScenes(scene13);
@@ -618,7 +612,7 @@ public class driver extends Application{
                 URI uri = new URI("https://pay.google.com");
                 Desktop dt = Desktop.getDesktop();
                 dt.browse(uri);
-                eventList.get(pos).setCapacity(eventList.get(pos).getCapacity()-1);
+                eventList.get(pos).setAttendees(eventList.get(pos).getAttendees()+1);
 
                 scene13 = createSceneThirteen();
                 switchScenes(scene13);
@@ -631,7 +625,7 @@ public class driver extends Application{
                 URI uri = new URI("https://www.apple.com/apple-pay/");
                 Desktop dt = Desktop.getDesktop();
                 dt.browse(uri);
-                eventList.get(pos).setCapacity(eventList.get(pos).getCapacity()-1);
+                eventList.get(pos).setAttendees(eventList.get(pos).getAttendees()+1);
 
                 scene13 = createSceneThirteen();
                 switchScenes(scene13);
@@ -909,6 +903,7 @@ public class driver extends Application{
     }
   
     private Scene createSceneFourteen(){
+        WFileEvent(eventList);
         createFinishMessage = new Label("New event has been added to the list");
 
         bCreateFinish = new Button("Back to options");
@@ -924,6 +919,7 @@ public class driver extends Application{
     }
 
     private Scene createSceneFifteen(){
+        WFileEvent(eventList);
         editFinishMessage = new Label("Event has been edited.");
 
         bEditFinish = new Button("Back to events list");
@@ -963,6 +959,52 @@ public class driver extends Application{
             }
         }
     }
+
+    public static void RFileEvent(){
+		try(Scanner scan = new Scanner(eventFile)){
+
+			if(scan.hasNextLine()){
+				scan.nextLine();
+			}
+
+			while(scan.hasNextLine()){
+
+				String lineIn = scan.nextLine();
+
+				try(Scanner rowScan = new Scanner(lineIn)){
+					rowScan.useDelimiter(",");
+
+ 					String nameIn = rowScan.next();
+                	int capacityIn  = Integer.parseInt(rowScan.next());
+                	String invType = rowScan.next();	
+                	int invAmount = Integer.parseInt(rowScan.next());
+                	Inventory invIn = new Inventory(invType, invAmount);
+                	double priceIn = Double.parseDouble(rowScan.next());
+                	LocalDate dateIn = LocalDate.parse(rowScan.next());
+                	String gymWorkerIn = rowScan.next();
+
+                    inventoryList.add(invIn);
+                	Event eventAdd = new Event(nameIn, capacityIn, invIn, priceIn, dateIn, gymWorkerIn);
+                	eventList.add(eventAdd);
+                }
+            }
+                
+		}catch(FileNotFoundException e){
+            e.printStackTrace();
+		}
+	}
+
+    public static void WFileEvent(ArrayList<Event> listIn){
+		try(PrintWriter pw = new PrintWriter(eventFile)){
+			pw.println("Name,Capacity,Inventory,Price,Date,GymWorker");
+			for(Event e : listIn){
+                pw.println(e.getName() + "," + e.getCapacity() + "," + e.getInventoryName() + "," + e.getInventoryAmount() + "," + e.getPrice() + "," + e.getDate() + "," + e.getGymWorkerName());
+			}
+		}catch(IOException e){
+			 System.out.println("Error updating this file: " + e.getMessage());
+		}
+	}
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -971,7 +1013,6 @@ public class driver extends Application{
 
 
 /*
- * Add csv methods
  * Promotion????
- * Once we have csv, include a method to check the pass events + add ArrayList<Event> passEvents
+ * add ArrayList<Event> passEvents
  */
