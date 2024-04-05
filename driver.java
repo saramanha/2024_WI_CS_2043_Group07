@@ -27,7 +27,8 @@ public class driver extends Application{
     private Stage stage;
     private static ArrayList<Member> memberList = new ArrayList<>();
     private static ArrayList<Event> eventList = new ArrayList<>();
-    private static ArrayList<GymWorker> workerList = new ArrayList<>(); //This is not used yet
+    private static ArrayList<Event> passEventList = new ArrayList<>();
+    private static ArrayList<GymWorker> workerList = new ArrayList<>();
     private static ArrayList<Inventory> inventoryList = new ArrayList<>();
     private static ArrayList<Button> eventButtons = new ArrayList<>();
     private String[] emails = {"@gmail.com", "@outlook.com"};
@@ -35,6 +36,7 @@ public class driver extends Application{
     private Event newEvent;
 
     static File eventFile = new File("Event_DB.csv");
+    static File passEventFile = new File("PassEvent_DB.csv");
     static File memberFile = new File("Members_DB.csv");
     static File invFile = new File("Inventory_DB.csv");
     static File workersFile = new File("GymWorker_DB.csv");
@@ -245,6 +247,10 @@ public class driver extends Application{
         RFileEvent();
         RFileMember();
         RFileWorker();
+
+        movePassEvents();
+
+        System.out.println(eventList);
 
         addWorker(new GymWorker("Teo", "Yoga", "email", "phone", "pass"));
 
@@ -515,6 +521,8 @@ public class driver extends Application{
    
     private Scene createSceneSeven(){
         WFileMember(memberList);
+        movePassEvents();
+        
         eventButtons.clear();
         eventListMessage = new Label("");
 
@@ -755,6 +763,8 @@ public class driver extends Application{
     }
 
     private Scene createSceneEleven(){
+        movePassEvents();
+
         eventButtons.clear();
         eventListMessage = new Label("");
 
@@ -1158,6 +1168,78 @@ public class driver extends Application{
             workerList.add(workerIn);
             WFileWorker(workerList);
         }
+    }
+
+    public static void movePassEvents(){
+        LocalDate today = LocalDate.now();
+
+        for(int i = eventList.size()-1; i >= 0; i--){
+            if(today.isAfter(eventList.get(i).getDate())){
+                System.out.println(today.isAfter(eventList.get(i).getDate()));
+                passEventList.add(eventList.get(i));
+                eventList.remove(i);
+            }
+        }
+        WFileEvent(eventList);
+        WFilePassEvent(passEventList);
+    }
+
+    public static void RFilePassEvent(){
+        try(Scanner scan = new Scanner(passEventFile)){
+
+			if(scan.hasNextLine()){
+				scan.nextLine();
+			}
+
+			while(scan.hasNextLine()){
+
+				String lineIn = scan.nextLine();
+                boolean exists = false;
+
+				try(Scanner rowScan = new Scanner(lineIn)){
+					rowScan.useDelimiter(",");
+
+ 					String nameIn = rowScan.next();
+                	int capacityIn  = Integer.parseInt(rowScan.next());
+                	String invType = rowScan.next();	
+                	int invAmount = Integer.parseInt(rowScan.next());
+                	Inventory invIn = new Inventory(invType, invAmount);
+                	double priceIn = Double.parseDouble(rowScan.next());
+                	LocalDate dateIn = LocalDate.parse(rowScan.next());
+                	String gymWorkerIn = rowScan.next();
+                    int attendeesIn = Integer.parseInt(rowScan.next());
+
+                    for(Inventory inv : inventoryList){
+                        if(inv.getType().compareTo(invIn.getType())==0){
+                            Event eventAdd = new Event(nameIn, capacityIn, inv, priceIn, dateIn, gymWorkerIn, attendeesIn);
+                            exists = true;
+                            passEventList.add(eventAdd);
+                            break;
+                        }
+                    }
+                    if(!exists){
+                        inventoryList.add(invIn);
+                        WFileInv(inventoryList);
+                	    Event eventAdd = new Event(nameIn, capacityIn, invIn, priceIn, dateIn, gymWorkerIn, attendeesIn);
+                	    passEventList.add(eventAdd);
+                    }
+                }
+            }
+                
+		}catch(FileNotFoundException e){
+            e.printStackTrace();
+		}
+    }
+
+    public static void WFilePassEvent(ArrayList<Event> listIn){
+        try(PrintWriter pw = new PrintWriter(passEventFile)){
+			pw.println("Name,Capacity,Inventory,Price,Date,GymWorker,Attendees");
+			for(Event e : listIn){
+                pw.println(e.getName() + "," + e.getCapacity() + "," + e.getInventoryName() + "," + e.getInventoryAmount() + "," + e.getPrice() + "," + e.getDate() + "," + e.getGymWorkerName() + "," + e.getAttendees());
+			}
+		}catch(IOException e){
+			 System.out.println("Error updating this file: " + e.getMessage());
+		}
     }
 
     public static void main(String[] args) {
