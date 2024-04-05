@@ -251,8 +251,6 @@ public class driver extends Application{
 
         movePassEvents();
 
-        System.out.println(eventList);
-
         addWorker(new GymWorker("Teo", "Yoga", "email", "phone", "pass"));
 
         //Testing end.
@@ -1176,7 +1174,6 @@ public class driver extends Application{
 
         for(int i = eventList.size()-1; i >= 0; i--){
             if(today.isAfter(eventList.get(i).getDate())){
-                System.out.println(today.isAfter(eventList.get(i).getDate()));
                 passEventList.add(eventList.get(i));
                 eventList.remove(i);
             }
