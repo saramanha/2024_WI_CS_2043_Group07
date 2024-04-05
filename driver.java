@@ -33,7 +33,10 @@ public class driver extends Application{
     private String[] emails = {"@gmail.com", "@outlook.com"};
     private Member newUser;
     private Event newEvent;
+
     static File eventFile = new File("Event_DB.csv");
+    static File memberFile = new File("Members_DB.csv");
+    static File invFile = new File("Inventory_DB.csv");
 
     //Scene 1: Deciding if it's a member or worker using the application.
     private Scene scene1;
@@ -237,8 +240,11 @@ public class driver extends Application{
         stage.setTitle("GYM Events");
 
         //Testing.
-        memberList.add(new Member("Teoman Gur", "tmngr@gmail.com", "5069218321", 1021));
+        RFileInv();
         RFileEvent();
+        RFileMember();
+
+        workerList.add(new GymWorker("Teo", "Yoga", "email", "phone", "pass"));
 
         //Testing end.
 
@@ -506,6 +512,7 @@ public class driver extends Application{
     }
    
     private Scene createSceneSeven(){
+        WFileMember(memberList);
         eventButtons.clear();
         eventListMessage = new Label("");
 
@@ -972,6 +979,7 @@ public class driver extends Application{
 			while(scan.hasNextLine()){
 
 				String lineIn = scan.nextLine();
+                boolean exists = false;
 
 				try(Scanner rowScan = new Scanner(lineIn)){
 					rowScan.useDelimiter(",");
@@ -986,9 +994,20 @@ public class driver extends Application{
                 	String gymWorkerIn = rowScan.next();
                     int attendeesIn = Integer.parseInt(rowScan.next());
 
-                    inventoryList.add(invIn);
-                	Event eventAdd = new Event(nameIn, capacityIn, invIn, priceIn, dateIn, gymWorkerIn, attendeesIn);
-                	eventList.add(eventAdd);
+                    for(Inventory inv : inventoryList){
+                        if(inv.getType().compareTo(invIn.getType())==0){
+                            Event eventAdd = new Event(nameIn, capacityIn, inv, priceIn, dateIn, gymWorkerIn, attendeesIn);
+                            exists = true;
+                            eventList.add(eventAdd);
+                            break;
+                        }
+                    }
+                    if(!exists){
+                        inventoryList.add(invIn);
+                        WFileInv(inventoryList);
+                	    Event eventAdd = new Event(nameIn, capacityIn, invIn, priceIn, dateIn, gymWorkerIn, attendeesIn);
+                	    eventList.add(eventAdd);
+                    }
                 }
             }
                 
@@ -1007,6 +1026,78 @@ public class driver extends Application{
 			 System.out.println("Error updating this file: " + e.getMessage());
 		}
 	}
+
+    public static void RFileMember(){
+        try (Scanner scan = new Scanner(memberFile)){
+            if(scan.hasNextLine()){
+                scan.nextLine();
+            }
+            while(scan.hasNextLine()){
+
+                String lineIn = scan.nextLine();
+            
+                try(Scanner rowScan = new Scanner(lineIn)) {
+                    rowScan.useDelimiter(",");
+
+                    String nameIn = rowScan.next();
+                    String emailIn  = rowScan.next();
+                    String phoneIn = rowScan.next();
+                    int idIn = Integer.parseInt(rowScan.next());
+
+                    Member copyMember = new Member(nameIn, emailIn, phoneIn, idIn);
+                    memberList.add(copyMember);
+                }
+            }
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void WFileMember(ArrayList<Member> listIn){
+        try(PrintWriter writer = new PrintWriter(memberFile)){
+            writer.println("Name,Email,Phone Number,ID");
+            for(Member m : listIn){
+                writer.println(m.getName() + "," + m.getEmail() + "," + m.getPhone() + "," + m.getId());
+            }
+        }catch(IOException e){
+            System.out.println("Error updating this file: " + e.getMessage());
+        }
+    }
+
+    public static void RFileInv(){
+		try (Scanner scan = new Scanner(invFile)){
+			if(scan.hasNextLine()){
+				scan.nextLine();
+		    }
+		    while(scan.hasNextLine()){
+
+			    String lineIn = scan.nextLine();
+
+			    try(Scanner rowScan = new Scanner(lineIn)) {
+				    rowScan.useDelimiter(",");
+
+				    String typeIn = rowScan.next();
+				    int amountIn = Integer.parseInt(rowScan.next());
+
+				    inventoryList.add(new Inventory(typeIn, amountIn));
+			    }
+		    }
+	    }catch(FileNotFoundException e){
+		    e.printStackTrace();
+	    }
+    }
+
+    public static void WFileInv(ArrayList<Inventory> newList) {
+
+        try (PrintWriter writer = new PrintWriter(invFile)) {
+            writer.println("Type,Amount");
+            for (Inventory inv : newList) {
+                writer.println(inv.getType() + "," + inv.getAmount());
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating file: " + e.getMessage());
+        }
+    }
 
     public static void main(String[] args) {
         launch(args);
