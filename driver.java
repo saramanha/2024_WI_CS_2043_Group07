@@ -677,14 +677,14 @@ public class driver extends Application{
                     if(inventoryList.size() == 0 || !contains){
                         Inventory newInventory = new Inventory(createInvName.getText(), Integer.parseInt(createCap.getText()));
                         inventoryList.add(newInventory);
-                        newEvent = new Event(createName.getText(), Integer.parseInt(createCap.getText()), newInventory, Double.parseDouble(createPrice.getText()), LocalDate.parse(createDate.getText()), createWorker.getText());
+                        newEvent = new Event(createName.getText(), Integer.parseInt(createCap.getText()), newInventory, Double.parseDouble(createPrice.getText()), LocalDate.parse(createDate.getText()), createWorker.getText(), 0);
                         eventList.add(newEvent);
 
                         scene14 = createSceneFourteen();
                         switchScenes(scene14);
                     }else {
                         if(Integer.parseInt(createCap.getText()) <= inventoryList.get(i).getAmount()){
-                            newEvent = new Event(createName.getText(), Integer.parseInt(createCap.getText()), inventoryList.get(i), Double.parseDouble(createPrice.getText()), LocalDate.parse(createDate.getText()), createWorker.getText());
+                            newEvent = new Event(createName.getText(), Integer.parseInt(createCap.getText()), inventoryList.get(i), Double.parseDouble(createPrice.getText()), LocalDate.parse(createDate.getText()), createWorker.getText(), 0);
                             eventList.add(newEvent);
 
                             scene14 = createSceneFourteen();
@@ -1001,7 +1001,7 @@ public class driver extends Application{
 		try(PrintWriter pw = new PrintWriter(eventFile)){
 			pw.println("Name,Capacity,Inventory,Price,Date,GymWorker,Attendees");
 			for(Event e : listIn){
-                pw.println(e.getName() + "," + e.getCapacity() + "," + e.getInventoryName() + "," + e.getInventoryAmount() + "," + e.getPrice() + "," + e.getDate() + "," + e.getGymWorkerName() + "," e.getAttendees());
+                pw.println(e.getName() + "," + e.getCapacity() + "," + e.getInventoryName() + "," + e.getInventoryAmount() + "," + e.getPrice() + "," + e.getDate() + "," + e.getGymWorkerName() + "," + e.getAttendees());
 			}
 		}catch(IOException e){
 			 System.out.println("Error updating this file: " + e.getMessage());
