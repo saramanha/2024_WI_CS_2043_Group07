@@ -36,6 +36,7 @@ public class driver extends Application{
 
     static File eventFile = new File("Event_DB.csv");
     static File memberFile = new File("Members_DB.csv");
+    static File invFile = new File("Inventory_DB.csv");
 
     //Scene 1: Deciding if it's a member or worker using the application.
     private Scene scene1;
@@ -1045,6 +1046,41 @@ public class driver extends Application{
             }
         }catch(IOException e){
             System.out.println("Error updating this file: " + e.getMessage());
+        }
+    }
+
+    public static void RFileInv(){
+		try (Scanner scan = new Scanner(invFile)){
+			if(scan.hasNextLine()){
+				scan.nextLine();
+		    }
+		    while(scan.hasNextLine()){
+
+			    String lineIn = scan.nextLine();
+
+			    try(Scanner rowScan = new Scanner(lineIn)) {
+				    rowScan.useDelimiter(",");
+
+				    String typeIn = rowScan.next();
+				    int amountIn = Integer.parseInt(rowScan.next());
+
+				    inventoryList.add(new Inventory(typeIn, amountIn));
+			    }
+		    }
+	    }catch(FileNotFoundException e){
+		    e.printStackTrace();
+	    }
+    }
+
+    public static void WFileInv(ArrayList<Inventory> newList) {
+
+        try (PrintWriter writer = new PrintWriter(invFile)) {
+            writer.println("Type,Amount");
+            for (Inventory inv : newList) {
+                writer.println(inv.getType() + "," + inv.getAmount());
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating file: " + e.getMessage());
         }
     }
 
