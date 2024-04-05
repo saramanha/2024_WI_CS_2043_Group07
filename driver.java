@@ -247,6 +247,7 @@ public class driver extends Application{
         RFileEvent();
         RFileMember();
         RFileWorker();
+        RFilePassEvent();
 
         movePassEvents();
 
