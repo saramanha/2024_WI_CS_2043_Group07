@@ -33,7 +33,9 @@ public class driver extends Application{
     private String[] emails = {"@gmail.com", "@outlook.com"};
     private Member newUser;
     private Event newEvent;
+
     static File eventFile = new File("Event_DB.csv");
+    static File memberFile = new File("Members_DB.csv");
 
     //Scene 1: Deciding if it's a member or worker using the application.
     private Scene scene1;
@@ -237,8 +239,8 @@ public class driver extends Application{
         stage.setTitle("GYM Events");
 
         //Testing.
-        memberList.add(new Member("Teoman Gur", "tmngr@gmail.com", "5069218321", 1021));
         RFileEvent();
+        RFileMember();
 
         //Testing end.
 
@@ -506,6 +508,7 @@ public class driver extends Application{
     }
    
     private Scene createSceneSeven(){
+        WFileMember(memberList);
         eventButtons.clear();
         eventListMessage = new Label("");
 
@@ -1007,6 +1010,43 @@ public class driver extends Application{
 			 System.out.println("Error updating this file: " + e.getMessage());
 		}
 	}
+
+    public static void RFileMember(){
+        try (Scanner scan = new Scanner(memberFile)){
+            if(scan.hasNextLine()){
+                scan.nextLine();
+            }
+            while(scan.hasNextLine()){
+
+                String lineIn = scan.nextLine();
+            
+                try(Scanner rowScan = new Scanner(lineIn)) {
+                    rowScan.useDelimiter(",");
+
+                    String nameIn = rowScan.next();
+                    String emailIn  = rowScan.next();
+                    String phoneIn = rowScan.next();
+                    int idIn = Integer.parseInt(rowScan.next());
+
+                    Member copyMember = new Member(nameIn, emailIn, phoneIn, idIn);
+                    memberList.add(copyMember);
+                }
+            }
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void WFileMember(ArrayList<Member> listIn){
+        try(PrintWriter writer = new PrintWriter(memberFile)){
+            writer.println("Name,Email,Phone Number,ID");
+            for(Member m : listIn){
+                writer.println(m.getName() + "," + m.getEmail() + "," + m.getPhone() + "," + m.getId());
+            }
+        }catch(IOException e){
+            System.out.println("Error updating this file: " + e.getMessage());
+        }
+    }
 
     public static void main(String[] args) {
         launch(args);
