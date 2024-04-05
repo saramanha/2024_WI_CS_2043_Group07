@@ -37,6 +37,7 @@ public class driver extends Application{
     static File eventFile = new File("Event_DB.csv");
     static File memberFile = new File("Members_DB.csv");
     static File invFile = new File("Inventory_DB.csv");
+    static File workersFile = new File("GymWorker_DB.csv");
 
     //Scene 1: Deciding if it's a member or worker using the application.
     private Scene scene1;
@@ -243,8 +244,9 @@ public class driver extends Application{
         RFileInv();
         RFileEvent();
         RFileMember();
+        RFileWorker();
 
-        workerList.add(new GymWorker("Teo", "Yoga", "email", "phone", "pass"));
+        addWorker(new GymWorker("Teo", "Yoga", "email", "phone", "pass"));
 
         //Testing end.
 
@@ -1096,6 +1098,65 @@ public class driver extends Application{
             }
         } catch (IOException e) {
             System.out.println("Error updating file: " + e.getMessage());
+        }
+    }
+
+    public static void RFileWorker(){
+        try(Scanner scan = new Scanner(workersFile)){
+            if(scan.hasNext()){
+                scan.nextLine();
+            }
+            while(scan.hasNextLine()){
+                String lineIn = scan.nextLine();
+
+                try(Scanner rowScan = new Scanner(lineIn)){
+                    rowScan.useDelimiter(",");
+
+                    String nameIn = rowScan.next();
+                    String roleIn = rowScan.next();
+                    String emailIn = rowScan.next();
+                    String phoneIn = rowScan.next();
+                    String passwordIn = rowScan.next();
+
+                    GymWorker gw1 = new GymWorker(nameIn, roleIn, emailIn, phoneIn, passwordIn);
+
+                    workerList.add(gw1);
+                }
+            }
+        }catch(FileNotFoundException fnf){
+            System.out.println("The file was not found!");
+        }
+    }
+
+    public static void WFileWorker(ArrayList<GymWorker> listIn){
+        try(PrintWriter pw = new PrintWriter(workersFile)){
+            pw.println("Name, Role, Email, Phone Number, Password");
+
+            for(GymWorker gw : listIn){
+                pw.println(gw.getName() + "," + gw.getRole() + "," + gw.getEmail() + ","  + gw.getPhoneNumber() + "," + gw.getPassword());
+            }
+        }catch(IOException e) {
+             System.out.println("Error updating this file: " + e.getMessage());
+        }
+    }
+
+    public static void addWorker(GymWorker workerIn){
+
+        RFileWorker();
+        boolean added = false;
+
+        for(GymWorker gw : workerList){
+
+            if(gw.getName().equals(workerIn.getName())){
+                added = true;
+                System.out.println("The worker is already in the list!");
+                break;
+            }
+        }
+
+        if(!added){
+            workerList.add(workerIn);
+            WFileWorker(workerList);
         }
     }
 
