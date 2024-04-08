@@ -14,6 +14,8 @@ public class GeneralReport{
 	static File reportFile = new File("GeneralReport_DB.csv");
 
 
+
+
 	public static ArrayList<Event> getList(){
 		pastEvents = new ArrayList<>();
 
@@ -29,13 +31,13 @@ public class GeneralReport{
 
 				if(parts[0].equals("Total Revenue")){
 					break;
-				} 
+				} /*
 				for(String st: parts){
 					System.out.println(st);
-				}
-				/*
+				}*/
+
 				Event evIn = new Event(parts[0], Integer.parseInt(parts[1]), new Inventory(parts[2], Integer.parseInt(parts[3])), Double.parseDouble(parts[4]), LocalDate.parse(parts[5]), parts[6], Integer.parseInt(parts[7]));
-				pastEvents.add(evIn);*/
+				pastEvents.add(evIn);
 			}
 
 
@@ -48,14 +50,36 @@ public class GeneralReport{
 	}
 	
 	public static double totalRevenue(){
+
 		double totalRevenue = 0;
 		pastEvents = getList();
 
 		for(Event e : pastEvents){
 			totalRevenue += getRevenue(e.getDate());
 		}
-		return totalRevenue;
 
+		try(Scanner scan = new Scanner(reportFile)){
+			ArrayList<String> lines = new ArrayList<>();
+
+				while(scan.hasNextLine()){
+					String line = scan.nextLine();
+					String[] parts = line.split(",");
+					
+					if(parts[0].equals("Total Revenue")){
+						line = "Total Revenue," + totalRevenue;
+					}
+					lines.add(line);
+				}
+				try(PrintWriter pw = new PrintWriter(reportFile)){
+					for(String line : lines){
+						pw.println(line);
+					}
+				}
+
+		}catch(IOException ioe){
+				System.out.println("Problem reading from or printing in that file!");
+		}
+		return totalRevenue;
 	}
 
 //a method that returns the amount of Revenue per one events (a request from staff)
@@ -65,13 +89,13 @@ public class GeneralReport{
 
         for (Event e : pastEvents) {
         	System.out.println("The date1 " + e.getDate()  + " The date1 " + dateIn);
-        	/*
+    
             if (e.getDate().isEqual(dateIn)) {
                 revenue = e.getPrice() * e.getAttendees();
                 System.out.println("The price: " + e.getPrice()  + " The capacity: " + e.getAttendees() + " The revenue: " + revenue);
                 break;
-            }*/
-        }
+	        }
+	    }
 
         return revenue;
     }
@@ -143,9 +167,8 @@ public class GeneralReport{
 		System.out.println("Here's the revenue for the third event: " + getRevenue(LocalDate.of(2018,4,9)));
 		System.out.println("Here's the revenue for the second event: " + getRevenue(LocalDate.of(2019,4,9)));
 
-			/*+ "\nThe revenue for the second one: " + getRevenue(LocalDate.of(2019,4,9)));
-		System.out.println("The total Revenue for two events: " + totalRevenue());
-*/
+		System.out.println("The total revenue is: " + totalRevenue());
+
 	}
 	
 }
