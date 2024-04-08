@@ -237,6 +237,7 @@ public class driver extends Application{
     private Label editFinishMessage;
 
     private VBox vBox15;
+
     @Override
     public void start(Stage primaryStage) throws IOException{
         stage = primaryStage;
@@ -251,9 +252,8 @@ public class driver extends Application{
 
         movePassEvents();
 
-        addWorker(new GymWorker("Teo", "Yoga", "email", "phone", "pass"));
-
-        //Testing end.
+        addWorker(new GymWorker("Amelia Smith", "Cardio Instructor", "Amelia.S@outlook.com", "5067253598", "AmesDark"));
+        addWorker(new GymWorker("John Johnson", "Swim Instructor", "JJohn@gmail.com", "2549631248", "doubleName"));
 
         scene1 = createSceneOne();
         stage.setScene(scene1);
