@@ -238,6 +238,9 @@ public class driver extends Application{
 
     private VBox vBox15;
 
+    //Scene 16:
+    private Scene scene16;
+
     @Override
     public void start(Stage primaryStage) throws IOException{
         stage = primaryStage;
@@ -550,7 +553,7 @@ public class driver extends Application{
         }
         else{
             for(int i = 0; i < eventList.size(); i++){
-                bEvent = new Button("Event " + (i+1) + ": " + eventList.get(i).getName());
+                bEvent = new Button("Event " + (i+1) + ": " + eventList.get(i).getName() + " with " + eventList.get(i).getGymWorkerName());
                 eventButtons.add(bEvent);
                 bEvent.setOnAction(this::handleEventButtons);
 
@@ -791,7 +794,7 @@ public class driver extends Application{
         }
         else{
             for(int i = 0; i < eventList.size(); i++){
-                bEditE = new Button("Event " + (i+1) + ": " + eventList.get(i).getName());
+                bEditE = new Button("Event " + (i+1) + ": " + eventList.get(i).getName() + " with " + eventList.get(i).getGymWorkerName());
                 eventButtons.add(bEditE);
                 bEditE.setOnAction(this::handleEditButtons);
 
@@ -952,6 +955,10 @@ public class driver extends Application{
         vBox15.getChildren().addAll(editFinishMessage, bEditFinish);
         scene15 = new Scene(vBox15, 300, 200);
         return scene15;
+    }
+
+    private Scene createSceneSixteen(){
+        return scene16;
     }
 
     private void switchScenes(Scene scene){
